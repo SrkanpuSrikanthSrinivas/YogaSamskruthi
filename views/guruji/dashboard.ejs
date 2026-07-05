@@ -1,0 +1,32 @@
+<%- include('../partials/header') %>
+<h1>My studio</h1>
+<div class="stat-row">
+  <a class="stat" href="/guruji/applications"><strong><%= pendingApps %></strong> pending applications</a>
+  <a class="stat" href="/guruji/questions"><strong><%= openQuestions %></strong> unanswered questions</a>
+  <a class="btn" href="/guruji/content/new">+ New content</a>
+</div>
+
+<h2>Your content</h2>
+<table class="table">
+  <tr><th>Type</th><th>Title</th><th>Status</th><th>Updated</th><th>Actions</th></tr>
+  <% content.forEach(c => { %>
+  <tr>
+    <td><span class="tag type"><%= c.type %></span></td>
+    <td><%= c.title %></td>
+    <td><span class="tag st-<%= c.status %>"><%= c.status %></span></td>
+    <td class="meta"><%= c.updated_at.slice(0,16) %></td>
+    <td class="actions">
+      <a href="/guruji/content/<%= c.id %>/edit">Edit</a>
+      <% if (c.status!=='published') { %><form method="post" action="/guruji/content/<%= c.id %>/publish" class="inline"><button class="link-btn">Publish</button></form><% } %>
+      <% if (c.status==='published') { %><form method="post" action="/guruji/content/<%= c.id %>/unpublish" class="inline"><button class="link-btn">Unpublish</button></form><% } %>
+      <% if (c.status!=='archived') { %><form method="post" action="/guruji/content/<%= c.id %>/archive" class="inline"><button class="link-btn danger">Archive</button></form><% } %>
+    </td>
+  </tr>
+  <% }) %>
+</table>
+
+<h2>Guidelines for Gurujis</h2>
+<% guidelines.forEach(g => { %>
+  <details class="panel"><summary><strong><%= g.title %></strong> <span class="meta">v<%= g.version %></span></summary><pre class="prose"><%= g.body %></pre></details>
+<% }) %>
+<%- include('../partials/footer') %>

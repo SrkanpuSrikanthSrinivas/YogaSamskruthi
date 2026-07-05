@@ -1,0 +1,13 @@
+<%- include('partials/header') %>
+<section class="panel narrow">
+  <h1>Join as an Aspirant</h1>
+  <form method="post" action="/register/aspirant" class="stack">
+    <label>Full name<input name="name" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Password<input type="password" name="password" required minlength="8"></label>
+    <label>Your intention<textarea name="intention" rows="3" required placeholder="What knowledge do you seek, and why?"></textarea></label>
+    <label>Target date<input type="date" name="target_date"></label>
+    <button class="btn">Register</button>
+  </form>
+</section>
+<%- include('partials/footer') %>

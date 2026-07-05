@@ -1,0 +1,28 @@
+<%- include('../partials/header') %>
+<h1>Releases</h1>
+<div class="two-col">
+<section class="panel">
+  <h2>Stage a release</h2>
+  <form method="post" action="/admin/releases" class="stack">
+    <label>Version<input name="version" placeholder="1.1.0" required></label>
+    <label>Release notes<textarea name="notes" rows="4"></textarea></label>
+    <button class="btn">Stage release</button>
+  </form>
+  <p class="meta">Wire the Deploy action to your CI/CD (e.g. a GitLab pipeline trigger token) for real deployments.</p>
+</section>
+<section>
+  <h2>History</h2>
+  <% rows.forEach(r => { %>
+    <div class="panel">
+      <strong>v<%= r.version %></strong> <span class="tag st-<%= r.status==='deployed'?'published':(r.status==='staged'?'draft':'archived') %>"><%= r.status %></span>
+      <p class="meta"><%= r.notes %></p>
+      <% if (r.deployed_at) { %><p class="meta">Deployed <%= r.deployed_at.slice(0,16) %> by <%= r.deployer %></p><% } %>
+      <div class="cta-row">
+        <% if (r.status==='staged') { %><form method="post" action="/admin/releases/<%= r.id %>/deploy" class="inline"><button class="btn small">Deploy</button></form><% } %>
+        <% if (r.status==='deployed') { %><form method="post" action="/admin/releases/<%= r.id %>/rollback" class="inline"><button class="link-btn danger">Roll back</button></form><% } %>
+      </div>
+    </div>
+  <% }) %>
+</section>
+</div>
+<%- include('../partials/footer') %>

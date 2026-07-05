@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yogasamskruthi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="site-head">
+  <div class="wrap head-row">
+    <a class="brand" href="/">Yoga<span>samskruthi</span></a>
+    <nav>
+      <a href="/gurujis">Gurujis</a>
+      <a href="/guidelines">Guidelines</a>
+      <% if (user) { %>
+        <% if (user.role==='admin') { %><a href="/admin">Admin</a><a href="/admin/users">Members</a><a href="/admin/guidelines">Guidelines CMS</a><a href="/admin/releases">Releases</a><% } %>
+        <% if (user.role==='guruji') { %><a href="/guruji">My studio</a><a href="/guruji/applications">Applications</a><a href="/guruji/questions">Q&amp;A</a><% } %>
+        <% if (user.role==='aspirant') { %><a href="/aspirant">My learning</a><% } %>
+        <a href="/calls">Calls</a>
+        <a href="/chat">Chat</a>
+        <form method="post" action="/logout" class="inline"><button class="link-btn">Sign out (<%= user.name.split(' ')[0] %>)</button></form>
+      <% } else { %>
+        <a href="/login">Sign in</a>
+        <a class="btn small" href="/register/aspirant">Join</a>
+      <% } %>
+    </nav>
+  </div>
+  <div class="kolam"></div>
+</header>
+<main class="wrap">
+<% if (flash) { %><div class="flash"><%= flash %></div><% } %>

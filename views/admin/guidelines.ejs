@@ -1,0 +1,34 @@
+<%- include('../partials/header') %>
+<h1>Guidelines CMS</h1>
+<div class="two-col">
+<section class="panel">
+  <h2><%= editing ? 'Edit guideline (creates new version)' : 'New guideline' %></h2>
+  <form method="post" action="/admin/guidelines/save" class="stack">
+    <% if (editing) { %><input type="hidden" name="id" value="<%= editing.id %>"><% } %>
+    <label>Audience
+      <select name="audience">
+        <% ['guruji','aspirant','both'].forEach(a => { %><option value="<%= a %>" <%= editing && editing.audience===a ? 'selected':'' %>><%= a %></option><% }) %>
+      </select>
+    </label>
+    <label>Title<input name="title" required value="<%= editing ? editing.title : '' %>"></label>
+    <label>Body<textarea name="body" rows="8" required><%= editing ? editing.body : '' %></textarea></label>
+    <button class="btn">Save draft</button>
+  </form>
+</section>
+<section>
+  <h2>All guidelines</h2>
+  <% rows.forEach(r => { %>
+    <div class="panel">
+      <strong><%= r.title %></strong> <span class="tag"><%= r.audience %></span>
+      <span class="tag st-<%= r.status==='published'?'published':'draft' %>"><%= r.status %> v<%= r.version %></span>
+      <p class="meta"><%= r.updated_at.slice(0,16) %></p>
+      <div class="actions">
+        <a href="/admin/guidelines/<%= r.id %>/edit">Edit</a>
+        <% if (r.status!=='published') { %><form method="post" action="/admin/guidelines/<%= r.id %>/publish" class="inline"><button class="link-btn">Publish</button></form><% } %>
+        <% if (r.status==='published') { %><form method="post" action="/admin/guidelines/<%= r.id %>/unpublish" class="inline"><button class="link-btn">Unpublish</button></form><% } %>
+      </div>
+    </div>
+  <% }) %>
+</section>
+</div>
+<%- include('../partials/footer') %>

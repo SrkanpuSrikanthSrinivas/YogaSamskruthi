@@ -1,0 +1,11 @@
+<%- include('partials/header') %>
+<h1>Guidelines</h1>
+<p class="lede">Published by the admin team so every member can be more effective and useful to society.</p>
+<% rows.forEach(r => { %>
+  <section class="panel">
+    <span class="tag"><%= r.audience %></span> <span class="meta">v<%= r.version %></span>
+    <h3><%= r.title %></h3>
+    <pre class="prose"><%= r.body %></pre>
+  </section>
+<% }) %>
+<%- include('partials/footer') %>

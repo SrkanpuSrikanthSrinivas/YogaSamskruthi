@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<h1>Aspirant questions</h1>
+<% if (!rows.length) { %><p class="meta">No questions yet.</p><% } %>
+<% rows.forEach(q => { %>
+  <section class="panel">
+    <p><strong><%= q.aspirant %></strong> <span class="meta"><%= q.created_at.slice(0,16) %></span></p>
+    <p class="prose"><%= q.question %></p>
+    <% if (q.answer) { %>
+      <p class="answer"><strong>Your answer:</strong> <%= q.answer %></p>
+    <% } else { %>
+      <form method="post" action="/guruji/questions/<%= q.id %>/answer" class="stack">
+        <label>Answer<textarea name="answer" rows="3" required></textarea></label>
+        <button class="btn">Send answer</button>
+      </form>
+    <% } %>
+  </section>
+<% }) %>
+<%- include('../partials/footer') %>

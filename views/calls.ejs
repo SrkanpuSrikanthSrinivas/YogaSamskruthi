@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+<h1>Audio / video calls</h1>
+<div class="two-col">
+<section class="panel">
+  <h2>Schedule a call</h2>
+  <% if (!people.length) { %><p class="meta">No connected members to call yet. Connections are made through accepted applications.</p><% } else { %>
+  <form method="post" action="/calls" class="stack">
+    <label>With
+      <select name="participant_id"><% people.forEach(p => { %><option value="<%= p.id %>"><%= p.name %> (<%= p.role %>)</option><% }) %></select>
+    </label>
+    <label>Topic<input name="title" placeholder="e.g. Pranayama basics — session 1"></label>
+    <label>Date &amp; time<input type="datetime-local" name="scheduled_at" required></label>
+    <label>Duration (minutes)<input type="number" name="duration_minutes" value="30" min="10" max="120"></label>
+    <button class="btn">Schedule &amp; generate meeting link</button>
+  </form>
+  <% } %>
+</section>
+<section>
+  <h2>Your calls</h2>
+  <% if (!calls.length) { %><p class="meta">No calls yet.</p><% } %>
+  <% calls.forEach(c => { %>
+    <div class="panel">
+      <strong><%= c.title %></strong> <span class="tag"><%= c.status %></span>
+      <p class="meta"><%= c.scheduled_at %> &middot; <%= c.duration_minutes %> min &middot; <%= c.organizer %> &harr; <%= c.participant %></p>
+      <% if (c.status==='scheduled') { %>
+        <a class="btn small" href="<%= c.meeting_link %>" target="_blank" rel="noopener">Join call</a>
+        <form method="post" action="/calls/<%= c.id %>/cancel" class="inline"><button class="link-btn danger">Cancel</button></form>
+      <% } %>
+    </div>
+  <% }) %>
+</section>
+</div>
+<%- include('partials/footer') %>

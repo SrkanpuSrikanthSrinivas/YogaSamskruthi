@@ -1,0 +1,46 @@
+<%- include('../partials/header') %>
+<h1>My learning</h1>
+<section class="panel">
+  <p><strong>Your intention:</strong> <%= profile.intention %> <span class="meta">target: <%= profile.target_date || '—' %></span></p>
+  <a class="btn small" href="/gurujis">Browse Gurujis</a>
+</section>
+
+<div class="two-col">
+<section>
+  <h2>Your applications</h2>
+  <% if (!apps.length) { %><p class="meta">Apply from a Guruji's profile page.</p><% } %>
+  <% apps.forEach(a => { %>
+    <div class="panel">
+      <strong><%= a.guruji %></strong> <span class="tag st-<%= a.status==='pending'?'draft':(a.status==='accepted'?'published':'archived') %>"><%= a.status %></span>
+      <p class="meta"><%= a.intention %></p>
+      <% if (a.reason) { %><p class="meta">Guruji's note: <%= a.reason %></p><% } %>
+      <% if (a.status==='accepted') { %>
+        <details><summary class="link-btn">Ask a question</summary>
+          <form method="post" action="/aspirant/questions" class="stack">
+            <input type="hidden" name="guruji_id" value="<%= a.guruji_id %>">
+            <label>Your question<textarea name="question" rows="2" required></textarea></label>
+            <button class="btn small">Send</button>
+          </form>
+        </details>
+        <p class="meta">You can also <a href="/calls">schedule a call</a> with this Guruji.</p>
+      <% } %>
+    </div>
+  <% }) %>
+</section>
+<section>
+  <h2>Your questions</h2>
+  <% if (!questions.length) { %><p class="meta">No questions yet.</p><% } %>
+  <% questions.forEach(q => { %>
+    <div class="panel">
+      <p class="meta">To <%= q.guruji %> &middot; <%= q.created_at.slice(0,10) %></p>
+      <p><%= q.question %></p>
+      <% if (q.answer) { %><p class="answer"><strong>Answer:</strong> <%= q.answer %></p><% } else { %><p class="meta">Awaiting answer.</p><% } %>
+    </div>
+  <% }) %>
+  <h2>Guidelines for Aspirants</h2>
+  <% guidelines.forEach(g => { %>
+    <details class="panel"><summary><strong><%= g.title %></strong> <span class="meta">v<%= g.version %></span></summary><pre class="prose"><%= g.body %></pre></details>
+  <% }) %>
+</section>
+</div>
+<%- include('../partials/footer') %>

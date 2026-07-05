@@ -1,0 +1,21 @@
+<%- include('../partials/header') %>
+<h1>Aspirant applications</h1>
+<p class="lede">Review each aspirant's profile and intention, then accept or reject — with or without a reason.</p>
+<% if (!apps.length) { %><p class="meta">No applications yet.</p><% } %>
+<% apps.forEach(a => { %>
+  <section class="panel">
+    <h3><%= a.name %> <span class="tag st-<%= a.status==='pending'?'draft':(a.status==='accepted'?'published':'archived') %>"><%= a.status %></span></h3>
+    <p class="meta"><%= a.email %> &middot; applied <%= a.created_at.slice(0,10) %> &middot; target: <%= a.target_date || '—' %></p>
+    <p><strong>Intention:</strong> <%= a.intention %></p>
+    <% if (a.status==='pending') { %>
+      <form method="post" action="/guruji/applications/<%= a.id %>/decide" class="stack">
+        <label>Reason (optional)<input name="reason" placeholder="Shared with the aspirant"></label>
+        <div class="cta-row">
+          <button class="btn" name="decision" value="accept">Accept</button>
+          <button class="btn ghost" name="decision" value="reject">Reject</button>
+        </div>
+      </form>
+    <% } else if (a.reason) { %><p class="meta">Reason: <%= a.reason %></p><% } %>
+  </section>
+<% }) %>
+<%- include('../partials/footer') %>

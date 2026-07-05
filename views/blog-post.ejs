@@ -1,0 +1,9 @@
+<%- include('partials/header') %>
+<article class="panel narrow">
+  <span class="tag type"><%= post.type %></span>
+  <h1><%= post.title %></h1>
+  <p class="meta">by <%= post.author %> &middot; <%= (post.published_at||'').slice(0,10) %></p>
+  <% if (post.media_path) { %><img src="<%= post.media_path %>" class="media" alt=""><% } %>
+  <div class="prose"><%= post.body %></div>
+</article>
+<%- include('partials/footer') %>

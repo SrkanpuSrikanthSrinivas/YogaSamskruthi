@@ -1,0 +1,18 @@
+<%- include('../partials/header') %>
+<h1>Admin console</h1>
+<div class="stat-row">
+  <a class="stat" href="/admin/users"><strong><%= pending %></strong> registrations awaiting verification</a>
+  <div class="stat"><strong><%= totals.gurujis %></strong> active Gurujis</div>
+  <div class="stat"><strong><%= totals.aspirants %></strong> active Aspirants</div>
+  <div class="stat"><strong><%= totals.published %></strong> published items</div>
+</div>
+<section class="panel">
+  <h2>Platform version</h2>
+  <p><strong><%= release ? 'v' + release.version : 'None deployed' %></strong> <span class="meta"><%= release ? 'deployed ' + (release.deployed_at||'').slice(0,16) : '' %></span></p>
+  <a class="btn small" href="/admin/releases">Manage releases</a>
+</section>
+<section class="panel">
+  <h2>Quick actions</h2>
+  <p><a href="/admin/users">Verify members</a> &middot; <a href="/admin/guidelines">Edit guidelines</a> &middot; <a href="/chat">Support chat</a> &middot; <a href="/calls">Schedule a call</a></p>
+</section>
+<%- include('../partials/footer') %>

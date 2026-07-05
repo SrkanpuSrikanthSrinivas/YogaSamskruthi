@@ -1,6 +1,11 @@
 {
   "framework": null,
   "buildCommand": "",
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "{views,public,src}/**"
+    }
+  },
   "rewrites": [
     { "source": "/(.*)", "destination": "/api" }
   ]

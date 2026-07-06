@@ -1,0 +1,10 @@
+<%- include('../partials/header') %>
+<div class="card narrow" style="max-width:640px">
+  <span class="pill gold"><%= post.type %></span>
+  <h1><%= post.title %></h1>
+  <p class="muted">by <%= post.author %></p>
+  <% if(post.image_id){ %><img class="media" src="/media/<%= post.image_id %>"><% } %>
+  <% if(post.type==='video' && post.video_url){ %><div class="video-wrap"><iframe src="<%= embedUrl(post.video_url) %>" allowfullscreen></iframe></div><% } %>
+  <p class="prose"><%= post.body %></p>
+</div>
+<%- include('../partials/footer') %>

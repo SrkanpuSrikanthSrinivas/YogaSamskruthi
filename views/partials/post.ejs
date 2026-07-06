@@ -1,0 +1,10 @@
+<div class="card">
+  <span class="pill gold"><%= post.type %></span>
+  <h3 style="margin-top:8px"><% if(post.type==='blog'){ %><a href="/blog/<%= post.id %>"><%= post.title %></a><% }else{ %><%= post.title %><% } %></h3>
+  <% if(post.type==='image' && post.image_id){ %><img class="media" src="/media/<%= post.image_id %>" alt="<%= post.title %>"><% } %>
+  <% if(post.type==='image' && !post.image_id){ %><div class="imgtile"></div><% } %>
+  <% if(post.type==='video' && post.video_url){ %><div class="video-wrap"><iframe src="<%= embedUrl(post.video_url) %>" allowfullscreen></iframe></div>
+  <% }else if(post.type==='video'){ %><div class="videobox"><span><%= post.video_minutes %> min clip</span></div><% } %>
+  <% if(post.type==='event'){ %><p class="muted"><%= post.event_at %></p><% } %>
+  <p class="muted"><%= (post.body||'').slice(0,160) %></p>
+</div>

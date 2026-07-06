@@ -1,7 +1,7 @@
 {
   "name": "yogasamskruthi",
-  "version": "2.0.0",
-  "description": "Full-stack knowledge exchange platform (Gurujis + aspirants) on Vercel + Neon Postgres",
+  "version": "1.0.0",
+  "description": "Yogasamskruthi — knowledge exchange platform with login module, backed by Neon Postgres",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",

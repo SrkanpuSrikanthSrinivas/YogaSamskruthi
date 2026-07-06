@@ -1,46 +1,74 @@
 <%- include('../partials/header') %>
-<h1>My learning</h1>
-<section class="panel">
-  <p><strong>Your intention:</strong> <%= profile.intention %> <span class="meta">target: <%= profile.target_date || '—' %></span></p>
-  <a class="btn small" href="/gurujis">Browse Gurujis</a>
-</section>
+<h1>Namaste, <%= me.name %></h1>
 
-<div class="two-col">
-<section>
-  <h2>Your applications</h2>
-  <% if (!apps.length) { %><p class="meta">Apply from a Guruji's profile page.</p><% } %>
+<div class="stat">
+  <div class="s"><b><%= apps.length %></b><span class="muted">applications</span></div>
+  <div class="s"><b><%= accepted.length %></b><span class="muted">accepted by</span></div>
+</div>
+
+<div class="sec-h">My intention</div>
+<div class="card">
+  <form method="post" action="/aspirant/intention">
+    <label>Your intention (this is what Gurujis see)</label>
+    <textarea name="intention" rows="3"><%= me.intention %></textarea>
+    <label>Target date</label><input type="date" name="target_date" value="<%= me.target_date %>">
+    <button class="btn sm" style="margin-top:10px">Save</button>
+  </form>
+</div>
+
+<div class="sec-h">Find a Guruji</div>
+<p class="intro">Choose the right Guruji for your intention, then apply.</p>
+<div class="grid">
+  <% gurus.forEach(g => { %>
+    <div class="card">
+      <h3><a href="/gurujis/<%= g.id %>"><%= g.name %></a></h3>
+      <div class="tag-row"><span class="pill <%= g.expertise %>"><%= g.expertise %></span></div>
+      <p class="muted"><%= g.bio %></p>
+      <details class="box"><summary class="btn sm" style="display:inline-flex;margin-top:8px">Apply</summary>
+        <form method="post" action="/aspirant/apply/<%= g.id %>" style="margin-top:10px">
+          <label>Your intention</label><textarea name="intention" rows="2" required><%= me.intention %></textarea>
+          <label>Target date</label><input type="date" name="target_date" value="<%= me.target_date %>">
+          <button class="btn sm" style="margin-top:10px">Send application</button>
+        </form>
+      </details>
+    </div>
+  <% }) %>
+</div>
+
+<div class="sec-h">My applications</div>
+<% if(!apps.length){ %><div class="empty">No applications yet.</div><% } %>
+<div class="grid">
   <% apps.forEach(a => { %>
-    <div class="panel">
-      <strong><%= a.guruji %></strong> <span class="tag st-<%= a.status==='pending'?'draft':(a.status==='accepted'?'published':'archived') %>"><%= a.status %></span>
-      <p class="meta"><%= a.intention %></p>
-      <% if (a.reason) { %><p class="meta">Guruji's note: <%= a.reason %></p><% } %>
-      <% if (a.status==='accepted') { %>
-        <details><summary class="link-btn">Ask a question</summary>
-          <form method="post" action="/aspirant/questions" class="stack">
-            <input type="hidden" name="guruji_id" value="<%= a.guruji_id %>">
-            <label>Your question<textarea name="question" rows="2" required></textarea></label>
-            <button class="btn small">Send</button>
-          </form>
-        </details>
-        <p class="meta">You can also <a href="/calls">schedule a call</a> with this Guruji.</p>
-      <% } %>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><h3 style="margin:0"><%= a.guruji %></h3>
+        <span class="pill <%= a.status==='pending'?'wait':(a.status==='accepted'?'ok':'no') %>"><%= a.status %></span></div>
+      <p class="muted"><%= a.intention %></p>
+      <% if(a.reason){ %><div class="note">Guruji's note: <%= a.reason %></div><% } %>
     </div>
   <% }) %>
-</section>
-<section>
-  <h2>Your questions</h2>
-  <% if (!questions.length) { %><p class="meta">No questions yet.</p><% } %>
-  <% questions.forEach(q => { %>
-    <div class="panel">
-      <p class="meta">To <%= q.guruji %> &middot; <%= fmt(q.created_at) %></p>
-      <p><%= q.question %></p>
-      <% if (q.answer) { %><p class="answer"><strong>Answer:</strong> <%= q.answer %></p><% } else { %><p class="meta">Awaiting answer.</p><% } %>
-    </div>
-  <% }) %>
-  <h2>Guidelines for Aspirants</h2>
-  <% guidelines.forEach(g => { %>
-    <details class="panel"><summary><strong><%= g.title %></strong> <span class="meta">v<%= g.version %></span></summary><pre class="prose"><%= g.body %></pre></details>
-  <% }) %>
-</section>
+</div>
+
+<% if(accepted.length){ %>
+<div class="sec-h">Ask &amp; learn</div>
+<p class="intro">Ask questions to a Guruji who has accepted you.</p>
+<div class="card">
+  <form method="post" action="/aspirant/ask">
+    <label>To</label>
+    <select name="guruji_id"><% accepted.forEach(a => { %><option value="<%= a.guruji_id %>"><%= a.guruji %></option><% }) %></select>
+    <label>Your question</label><textarea name="question" rows="2" required></textarea>
+    <button class="btn sm" style="margin-top:10px">Send question</button>
+  </form>
+</div>
+<% } %>
+<% questions.forEach(q => { %>
+  <div class="card" style="margin-top:12px">
+    <p class="muted">To <%= q.guruji %></p><p><%= q.question %></p>
+    <% if(q.answer){ %><div class="note" style="background:#dcefe2;color:#245c3e"><b>Answer:</b> <%= q.answer %></div><% } else { %><span class="pill wait">Awaiting answer</span><% } %>
+  </div>
+<% }) %>
+
+<div class="sec-h">Your guidelines</div>
+<div class="two">
+  <% guides.forEach(g => { %><div class="card"><h3><%= g.title %></h3><p class="muted prose"><%= g.body %></p></div><% }) %>
 </div>
 <%- include('../partials/footer') %>

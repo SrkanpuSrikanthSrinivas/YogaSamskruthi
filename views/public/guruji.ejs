@@ -1,0 +1,22 @@
+<%- include('../partials/header') %>
+<a class="btn ghost sm" href="/" style="margin-bottom:16px">← All Gurujis</a>
+<div class="card">
+  <h1 style="margin:0"><%= g.name %></h1>
+  <div class="tag-row"><span class="pill <%= g.expertise %>"><%= g.expertise %></span></div>
+  <p class="muted"><%= g.bio %></p>
+  <% if (me && me.role==='aspirant') { %>
+    <details class="box"><summary class="btn sm" style="display:inline-flex">Apply to learn with <%= g.name.split(' ')[1] %></summary>
+      <form method="post" action="/aspirant/apply/<%= g.id %>" style="margin-top:10px">
+        <label>Your intention</label><textarea name="intention" rows="3" required></textarea>
+        <label>Target date</label><input type="date" name="target_date">
+        <button class="btn sm" style="margin-top:10px">Send application</button>
+      </form>
+    </details>
+  <% } else if (!me) { %><div class="note">Join as an aspirant to apply. <a href="/join">Join</a></div><% } %>
+</div>
+<div class="sec-h">Shared by <%= g.name %></div>
+<div class="grid">
+  <% posts.forEach(post => { %><%- include('../partials/post', { post }) %><% }) %>
+  <% if (!posts.length) { %><div class="empty">Nothing shared yet.</div><% } %>
+</div>
+<%- include('../partials/footer') %>

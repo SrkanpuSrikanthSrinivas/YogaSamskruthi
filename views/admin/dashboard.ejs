@@ -1,18 +1,75 @@
 <%- include('../partials/header') %>
 <h1>Admin console</h1>
-<div class="stat-row">
-  <a class="stat" href="/admin/users"><strong><%= pending %></strong> registrations awaiting verification</a>
-  <div class="stat"><strong><%= totals.gurujis %></strong> active Gurujis</div>
-  <div class="stat"><strong><%= totals.aspirants %></strong> active Aspirants</div>
-  <div class="stat"><strong><%= totals.published %></strong> published items</div>
+<div class="stat">
+  <div class="s"><b><%= pending %></b><span class="muted">awaiting verification</span></div>
+  <div class="s"><b><%= members.filter(m=>m.status==='active').length %></b><span class="muted">active members</span></div>
 </div>
-<section class="panel">
-  <h2>Platform version</h2>
-  <p><strong><%= release ? 'v' + release.version : 'None deployed' %></strong> <span class="meta"><%= release ? 'deployed ' + fmt(release.deployed_at,'datetime') : '' %></span></p>
-  <a class="btn small" href="/admin/releases">Manage releases</a>
-</section>
-<section class="panel">
-  <h2>Quick actions</h2>
-  <p><a href="/admin/users">Verify members</a> &middot; <a href="/admin/guidelines">Edit guidelines</a> &middot; <a href="/chat">Support chat</a> &middot; <a href="/calls">Schedule a call</a></p>
-</section>
+
+<div class="sec-h">Members</div>
+<p class="intro">Approve a registration to enable it, reject it, or disable an account. Guruji documents are shown for verification.</p>
+<% members.forEach(m => { %>
+  <div class="card" style="margin-bottom:12px">
+    <div class="row" style="justify-content:space-between">
+      <div><h3 style="margin:0"><%= m.name %></h3>
+        <div class="tag-row"><span class="pill gold"><%= m.role %></span>
+          <% if(m.expertise){ %><span class="pill <%= m.expertise %>"><%= m.expertise %></span><% } %>
+          <span class="pill <%= m.status==='active'?'ok':(m.status==='pending'?'wait':'no') %>"><%= m.status %></span></div>
+      </div>
+    </div>
+    <p class="muted"><%= m.role==='guruji' ? m.bio : ('Intention: ' + m.intention) %></p>
+    <% if(m.role==='guruji' && m.document_id){ %><a class="doc" href="/media/<%= m.document_id %>" target="_blank">View verification document</a><% } %>
+    <% if(m.admin_note){ %><div class="note">Note: <%= m.admin_note %></div><% } %>
+    <form method="post" action="/admin/members/<%= m.id %>" style="margin-top:10px">
+      <label>Note / reason (optional)</label><input name="note">
+      <div class="row" style="margin-top:10px">
+        <% if(m.status!=='active'){ %><button class="btn sm" name="status" value="active">Approve &amp; enable</button><% } %>
+        <% if(m.status==='pending'){ %><button class="btn no sm" name="status" value="rejected">Reject</button><% } %>
+        <% if(m.status==='active'){ %><button class="btn no sm" name="status" value="disabled">Disable</button><% } %>
+      </div>
+    </form>
+  </div>
+<% }) %>
+
+<div class="sec-h">Guidelines</div>
+<div class="two">
+  <div class="card">
+    <h3>Add / update guideline</h3>
+    <form method="post" action="/admin/guidelines">
+      <label>Audience</label><select name="audience"><option value="guruji">Guruji</option><option value="aspirant">Aspirant</option><option value="both">Both</option></select>
+      <label>Title</label><input name="title" required>
+      <label>Body</label><textarea name="body" rows="5" required></textarea>
+      <button class="btn sm" style="margin-top:10px">Save guideline</button>
+    </form>
+    <p class="muted" style="margin-top:10px">To edit an existing one, copy its text, adjust, and save with the same title.</p>
+  </div>
+  <div>
+    <% guides.forEach(g => { %>
+      <div class="card" style="margin-bottom:12px">
+        <div class="row" style="justify-content:space-between"><b><%= g.title %></b><span class="pill gold"><%= g.audience %></span></div>
+        <p class="muted prose" style="margin:8px 0 0"><%= g.body %></p>
+        <form method="post" action="/admin/guidelines" style="margin-top:8px">
+          <input type="hidden" name="id" value="<%= g.id %>"><input type="hidden" name="audience" value="<%= g.audience %>">
+          <input type="hidden" name="title" value="<%= g.title %>">
+          <label>Edit body</label><textarea name="body" rows="4"><%= g.body %></textarea>
+          <button class="btn ghost sm" style="margin-top:8px">Update</button>
+        </form>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<div class="sec-h">Releases</div>
+<div class="two">
+  <div class="card">
+    <h3>Deploy a version</h3>
+    <form method="post" action="/admin/releases">
+      <label>Version</label><input name="version" placeholder="1.1.0" required>
+      <label>Notes</label><textarea name="notes" rows="3"></textarea>
+      <button class="btn sm" style="margin-top:10px">Deploy</button>
+    </form>
+  </div>
+  <div>
+    <% releases.forEach(r => { %><div class="card" style="margin-bottom:10px"><div class="row" style="justify-content:space-between"><b>v<%= r.version %></b><span class="pill ok"><%= r.status %></span></div><p class="muted"><%= r.notes %></p></div><% }) %>
+  </div>
+</div>
 <%- include('../partials/footer') %>

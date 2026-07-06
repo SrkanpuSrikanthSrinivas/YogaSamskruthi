@@ -1,0 +1,36 @@
+<%- include('../partials/header') %>
+<div class="hero">
+  <div>
+    <div class="eyebrow">A tradition of shared knowledge</div>
+    <h1>Learn directly from those who've walked the path.</h1>
+    <p>Yogasamskruthi connects Gurujis with aspirants across yoga, natural farming, and entrepreneurship — apply to a teacher, ask real questions, and meet face to face.</p>
+    <div class="row" style="margin-top:18px">
+      <% if (!me) { %><a class="btn" href="/join">Find a Guruji</a><a class="btn ghost" href="/teach">Teach as a Guruji</a>
+      <% } else { %><a class="btn" href="/<%= me.role %>">Go to my dashboard</a><% } %>
+    </div>
+  </div>
+  <%- include('../partials/mandala') %>
+</div>
+
+<div class="sec-h">Gurujis</div>
+<p class="intro">Every Guruji here has passed background verification. Choose by the path you want to walk.</p>
+<div class="grid">
+  <% gurus.forEach(g => { %>
+    <div class="card">
+      <h3><a href="/gurujis/<%= g.id %>"><%= g.name %></a></h3>
+      <div class="tag-row"><span class="pill <%= g.expertise %>"><%= g.expertise %></span></div>
+      <p class="muted"><%= g.bio %></p>
+      <a class="btn ghost sm" href="/gurujis/<%= g.id %>" style="margin-top:10px">View profile</a>
+    </div>
+  <% }) %>
+  <% if (!gurus.length) { %><div class="empty">No Gurujis yet.</div><% } %>
+</div>
+
+<div class="sec-h">Guidelines</div>
+<p class="intro">Published by the admin team so each person can be more effective and useful to the community.</p>
+<div class="two">
+  <% guides.forEach(g => { %>
+    <div class="card"><span class="pill gold"><%= g.audience %></span><h3 style="margin-top:8px"><%= g.title %></h3><p class="muted prose"><%= g.body %></p></div>
+  <% }) %>
+</div>
+<%- include('../partials/footer') %>

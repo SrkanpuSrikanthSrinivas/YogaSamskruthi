@@ -1,0 +1,10 @@
+<svg class="mandala" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="94" stroke="#c28a2b" stroke-width="1" stroke-dasharray="2 5"/>
+  <% for (let i=0;i<12;i++){ %>
+    <g transform="rotate(<%= i*30 %> 100 100)">
+      <path d="M100 26 C120 60 120 90 100 108 C80 90 80 60 100 26 Z" stroke="#1c3d31" stroke-width="1.1" fill="<%= i%2 ? '#e7d7b2':'#e4efe6' %>" fill-opacity=".55"/>
+    </g>
+  <% } %>
+  <circle cx="100" cy="100" r="26" fill="#1c3d31"/><circle cx="100" cy="100" r="26" stroke="#c28a2b" stroke-width="1.5"/>
+  <circle cx="100" cy="100" r="9" fill="#c28a2b"/>
+</svg>

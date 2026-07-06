@@ -1,32 +1,78 @@
 <%- include('../partials/header') %>
-<h1>My studio</h1>
-<div class="stat-row">
-  <a class="stat" href="/guruji/applications"><strong><%= pendingApps %></strong> pending applications</a>
-  <a class="stat" href="/guruji/questions"><strong><%= openQuestions %></strong> unanswered questions</a>
-  <a class="btn" href="/guruji/content/new">+ New content</a>
+<h1>Namaste, <%= me.name %></h1>
+<div class="tag-row"><span class="pill <%= me.expertise %>"><%= me.expertise %></span><span class="pill ok">active</span></div>
+
+<div class="sec-h">Share knowledge</div>
+<p class="intro">Post an image, calendar event, blog, announcement, or a short video (5–10 min).</p>
+<div class="card">
+  <form method="post" action="/guruji/posts" enctype="multipart/form-data">
+    <div class="two">
+      <div>
+        <label>Type</label>
+        <select name="type" id="ptype" onchange="ptoggle()">
+          <option value="blog">Blog</option><option value="announcement">Announcement</option>
+          <option value="event">Calendar event</option><option value="image">Image</option><option value="video">Video (5–10 min)</option>
+        </select>
+        <label>Title</label><input name="title" required>
+      </div>
+      <div>
+        <div id="f-event" style="display:none"><label>When</label><input type="datetime-local" name="event_at"></div>
+        <div id="f-image" style="display:none"><label>Image file (max 4 MB)</label><input type="file" name="image" accept="image/*"></div>
+        <div id="f-video" style="display:none"><label>YouTube / Vimeo link</label><input name="video_url" placeholder="https://youtu.be/...">
+          <label>Length (minutes, max 10)</label><input type="number" name="video_minutes" min="1" max="10" value="7"></div>
+      </div>
+    </div>
+    <label>Body</label><textarea name="body" rows="3"></textarea>
+    <button class="btn sm" style="margin-top:12px">Share</button>
+  </form>
+</div>
+<div class="grid" style="margin-top:16px">
+  <% posts.forEach(post => { %><%- include('../partials/post', { post }) %><% }) %>
+  <% if(!posts.length){ %><div class="empty">Nothing shared yet.</div><% } %>
 </div>
 
-<h2>Your content</h2>
-<table class="table">
-  <tr><th>Type</th><th>Title</th><th>Status</th><th>Updated</th><th>Actions</th></tr>
-  <% content.forEach(c => { %>
-  <tr>
-    <td><span class="tag type"><%= c.type %></span></td>
-    <td><%= c.title %></td>
-    <td><span class="tag st-<%= c.status %>"><%= c.status %></span></td>
-    <td class="meta"><%= fmt(c.updated_at,'datetime') %></td>
-    <td class="actions">
-      <a href="/guruji/content/<%= c.id %>/edit">Edit</a>
-      <% if (c.status!=='published') { %><form method="post" action="/guruji/content/<%= c.id %>/publish" class="inline"><button class="link-btn">Publish</button></form><% } %>
-      <% if (c.status==='published') { %><form method="post" action="/guruji/content/<%= c.id %>/unpublish" class="inline"><button class="link-btn">Unpublish</button></form><% } %>
-      <% if (c.status!=='archived') { %><form method="post" action="/guruji/content/<%= c.id %>/archive" class="inline"><button class="link-btn danger">Archive</button></form><% } %>
-    </td>
-  </tr>
-  <% }) %>
-</table>
-
-<h2>Guidelines for Gurujis</h2>
-<% guidelines.forEach(g => { %>
-  <details class="panel"><summary><strong><%= g.title %></strong> <span class="meta">v<%= g.version %></span></summary><pre class="prose"><%= g.body %></pre></details>
+<div class="sec-h">Aspirant requests</div>
+<p class="intro">Read each aspirant's intention, then accept or reject — with or without a reason.</p>
+<% if(!requests.length){ %><div class="empty">No requests yet.</div><% } %>
+<% requests.forEach(a => { %>
+  <div class="card" style="margin-bottom:12px">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0"><%= a.name %></h3>
+      <span class="pill <%= a.status==='pending'?'wait':(a.status==='accepted'?'ok':'no') %>"><%= a.status %></span></div>
+    <p class="muted">Target: <%= a.target_date || '—' %></p>
+    <p><b>Intention:</b> <%= a.intention %></p>
+    <% if(a.status==='pending'){ %>
+      <form method="post" action="/guruji/requests/<%= a.id %>">
+        <label>Reason (optional — shared with the aspirant)</label><input name="reason">
+        <div class="row" style="margin-top:10px">
+          <button class="btn sm" name="decision" value="accept">Accept</button>
+          <button class="btn no sm" name="decision" value="reject">Reject</button>
+        </div>
+      </form>
+    <% } else if(a.reason){ %><div class="note">Your note: <%= a.reason %></div><% } %>
+  </div>
 <% }) %>
+
+<div class="sec-h">Questions</div>
+<% if(!questions.length){ %><div class="empty">No questions yet.</div><% } %>
+<% questions.forEach(q => { %>
+  <div class="card" style="margin-bottom:12px">
+    <p class="muted">From <%= q.aspirant %></p>
+    <p><%= q.question %></p>
+    <% if(q.answer){ %><div class="note" style="background:#dcefe2;color:#245c3e"><b>Your answer:</b> <%= q.answer %></div>
+    <% } else { %>
+      <form method="post" action="/guruji/questions/<%= q.id %>"><label>Your answer</label><textarea name="answer" rows="2" required></textarea>
+        <button class="btn sm" style="margin-top:8px">Send answer</button></form>
+    <% } %>
+  </div>
+<% }) %>
+
+<div class="sec-h">Your guidelines</div>
+<div class="two">
+  <% guides.forEach(g => { %><div class="card"><h3><%= g.title %></h3><p class="muted prose"><%= g.body %></p></div><% }) %>
+</div>
+<script>
+function ptoggle(){var t=document.getElementById('ptype').value;
+['event','image','video'].forEach(function(k){document.getElementById('f-'+k).style.display=(t===k)?'block':'none';});}
+ptoggle();
+</script>
 <%- include('../partials/footer') %>

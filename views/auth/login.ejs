@@ -1,0 +1,17 @@
+<%- include('../partials/header') %>
+<div class="card narrow">
+  <h1>Sign in</h1>
+  <form method="post" action="/login">
+    <label>Email</label><input type="email" name="email" required>
+    <label>Password</label><input type="password" name="password" required>
+    <button class="btn" style="margin-top:16px;width:100%">Sign in</button>
+  </form>
+  <p class="muted" style="margin-top:16px">New here? <a href="/join">Join as an aspirant</a> or <a href="/teach">teach as a Guruji</a>.</p>
+  <div class="note" style="margin-top:14px">
+    <b>Try the demo accounts:</b><br>
+    Admin — admin@yoga.org / admin123<br>
+    Guruji — ananda@yoga.org / guruji123<br>
+    Aspirant — ravi@yoga.org / aspirant123
+  </div>
+</div>
+<%- include('../partials/footer') %>

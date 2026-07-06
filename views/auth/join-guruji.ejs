@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<div class="card narrow">
+  <h1>Teach as a Guruji</h1>
+  <p class="muted">Background verification happens before your account is enabled. Attach a certificate or reference to help — you can sign in once an admin approves you.</p>
+  <form method="post" action="/teach" enctype="multipart/form-data">
+    <label>Full name</label><input name="name" required>
+    <label>Email</label><input type="email" name="email" required>
+    <label>Password</label><input type="password" name="password" required minlength="6">
+    <label>Area of knowledge</label>
+    <select name="expertise"><option value="yoga">Yoga practice</option><option value="farming">Farming practices</option><option value="entrepreneurship">Entrepreneur practices</option></select>
+    <label>About you and your practice</label><textarea name="bio" rows="3"></textarea>
+    <label>Verification document (PDF or image, optional)</label><input type="file" name="document" accept=".pdf,image/*">
+    <button class="btn" style="margin-top:16px;width:100%">Submit for verification</button>
+  </form>
+</div>
+<%- include('../partials/footer') %>

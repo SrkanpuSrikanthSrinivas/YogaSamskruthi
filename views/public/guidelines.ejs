@@ -1,0 +1,9 @@
+<%- include('../partials/header') %>
+<h1>Guidelines</h1>
+<p class="intro">Maintained by the admin team.</p>
+<div class="two">
+  <% guides.forEach(g => { %>
+    <div class="card"><span class="pill gold"><%= g.audience %></span><h3 style="margin-top:8px"><%= g.title %></h3><p class="muted prose"><%= g.body %></p></div>
+  <% }) %>
+</div>
+<%- include('../partials/footer') %>

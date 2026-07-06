@@ -1,0 +1,15 @@
+<%- include('../partials/header') %>
+<div class="card narrow">
+  <h1>Join as an aspirant</h1>
+  <p class="muted">Tell us your intention and target date. You can sign in right away.</p>
+  <form method="post" action="/join">
+    <label>Full name</label><input name="name" required>
+    <label>Email</label><input type="email" name="email" required>
+    <label>Password</label><input type="password" name="password" required minlength="6">
+    <label>Your intention</label><textarea name="intention" rows="3" required placeholder="What knowledge do you seek, and why?"></textarea>
+    <label>Target date</label><input type="date" name="target_date">
+    <button class="btn" style="margin-top:16px;width:100%">Create my account</button>
+  </form>
+  <p class="muted" style="margin-top:14px">Want to teach instead? <a href="/teach">Register as a Guruji</a>.</p>
+</div>
+<%- include('../partials/footer') %>

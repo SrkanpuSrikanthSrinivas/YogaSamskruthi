@@ -3,7 +3,7 @@
 <% if (!rows.length) { %><p class="meta">No questions yet.</p><% } %>
 <% rows.forEach(q => { %>
   <section class="panel">
-    <p><strong><%= q.aspirant %></strong> <span class="meta"><%= q.created_at.slice(0,16) %></span></p>
+    <p><strong><%= q.aspirant %></strong> <span class="meta"><%= fmt(q.created_at,'datetime') %></span></p>
     <p class="prose"><%= q.question %></p>
     <% if (q.answer) { %>
       <p class="answer"><strong>Your answer:</strong> <%= q.answer %></p>

@@ -16,7 +16,7 @@
     <div class="panel">
       <strong>v<%= r.version %></strong> <span class="tag st-<%= r.status==='deployed'?'published':(r.status==='staged'?'draft':'archived') %>"><%= r.status %></span>
       <p class="meta"><%= r.notes %></p>
-      <% if (r.deployed_at) { %><p class="meta">Deployed <%= r.deployed_at.slice(0,16) %> by <%= r.deployer %></p><% } %>
+      <% if (r.deployed_at) { %><p class="meta">Deployed <%= fmt(r.deployed_at,'datetime') %> by <%= r.deployer %></p><% } %>
       <div class="cta-row">
         <% if (r.status==='staged') { %><form method="post" action="/admin/releases/<%= r.id %>/deploy" class="inline"><button class="btn small">Deploy</button></form><% } %>
         <% if (r.status==='deployed') { %><form method="post" action="/admin/releases/<%= r.id %>/rollback" class="inline"><button class="link-btn danger">Roll back</button></form><% } %>

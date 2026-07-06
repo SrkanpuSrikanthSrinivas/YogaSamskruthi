@@ -23,8 +23,10 @@
   <div class="panel">
     <span class="tag type"><%= c.type %></span>
     <h3><% if (c.type==='blog') { %><a href="/blog/<%= c.id %>"><%= c.title %></a><% } else { %><%= c.title %><% } %></h3>
-    <% if (c.type==='image' && c.media_path) { %><img src="<%= c.media_path %>" alt="<%= c.title %>" class="media"><% } %>
-    <% if (c.type==='video' && c.media_path) { %><video src="<%= c.media_path %>" controls class="media"></video><p class="meta"><%= Math.round(c.duration_seconds/60) %> min</p><% } %>
+    <% if (c.type==='image' && c.image_id) { %><img src="/media/<%= c.image_id %>" alt="<%= c.title %>" class="media"><% } %>
+    <% if (c.type==='video' && c.video_url) { %>
+      <div class="video-wrap"><iframe src="<%= embedUrl(c.video_url) %>" frameborder="0" allowfullscreen></iframe></div>
+    <% } %>
     <% if (c.type==='event') { %><p class="meta"><%= c.event_date %></p><% } %>
     <p><%= (c.body||'').slice(0,160) %></p>
   </div>

@@ -21,7 +21,7 @@
     <div class="panel">
       <strong><%= r.title %></strong> <span class="tag"><%= r.audience %></span>
       <span class="tag st-<%= r.status==='published'?'published':'draft' %>"><%= r.status %> v<%= r.version %></span>
-      <p class="meta"><%= r.updated_at.slice(0,16) %></p>
+      <p class="meta"><%= fmt(r.updated_at,'datetime') %></p>
       <div class="actions">
         <a href="/admin/guidelines/<%= r.id %>/edit">Edit</a>
         <% if (r.status!=='published') { %><form method="post" action="/admin/guidelines/<%= r.id %>/publish" class="inline"><button class="link-btn">Publish</button></form><% } %>

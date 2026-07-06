@@ -1,80 +1,107 @@
 # Yogasamskruthi — Knowledge Exchange Platform
 
-**Yoga** — complete involvement in the activities we do, with continuous gaining and applying of knowledge. Yogasamskruthi connects Gurujis and aspirants across yoga practice, farming practices, and entrepreneur practices.
+**Yoga** — complete involvement in what we do, continuously gaining knowledge and applying it. Yogasamskruthi is a platform for exchanging knowledge between **Gurujis** and **aspirants** across yoga practice, farming practices, and entrepreneur practices.
 
-Built as an AEM-style authoring system: content is authored as **draft**, then **published** to the public site, and can be **unpublished** or **archived** — with the admin console acting as the author/verification layer.
+Content is authored AEM-style: **draft → published → archived**. Only published content appears on the public site. Admins verify members, manage guidelines as versioned publications, and track releases.
 
-## Quick start
+**Stack:** Node.js + Express + EJS · **Neon Postgres** (single source of truth for all data, including uploaded media) · deploys to **Vercel** serverless.
 
-Requires **Node.js 22+** (uses the built-in `node:sqlite` — zero native dependencies).
+---
+
+## Deploy to Vercel + Neon (production)
+
+### 1. Create the Neon database
+- In the Vercel dashboard: your project → **Storage** → **Create Database** → **Neon** (or sign up at neon.tech and create a project).
+- Copy the **pooled** connection string. It looks like:
+  `postgresql://user:pass@ep-xxx-pooler.region.aws.neon.tech/neondb?sslmode=require`
+
+### 2. Set environment variables in Vercel
+Project → **Settings → Environment Variables**:
+
+| Name | Value |
+|---|---|
+| `DATABASE_URL` | your Neon pooled connection string |
+| `SESSION_SECRET` | any long random string |
+
+(If you created the Neon store through Vercel's Storage tab, `DATABASE_URL` is injected automatically — just confirm it's present.)
+
+### 3. Deploy
+- Push the repo (or run `vercel --prod`). No build step — `vercel.json` sets `framework: null` and routes all traffic into the Express function.
+- On the first request, the app creates all tables and seeds demo data automatically. No manual migration needed.
+- **Node version:** pinned to 22.x via `package.json` engines.
+
+Visit the deployment URL — the seeded homepage loads, and everything reads and writes to Neon.
+
+### Seed accounts
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@yogasamskruthi.org | admin123 |
+| Guruji (active) | ananda@yogasamskruthi.org | guruji123 |
+| Guruji (pending — approve at /admin/users) | bhoomika@yogasamskruthi.org | guruji123 |
+| Aspirant | ravi@example.com | aspirant123 |
+
+**Change these before real use.**
+
+---
+
+## Run locally (zero setup)
 
 ```bash
 npm install
-node server.js
-# → http://localhost:3000
+npm start          # → http://localhost:3000
 ```
 
-The database (`yogasamskruthi.db`) is created and seeded automatically on first run.
+With no `DATABASE_URL` set, the app uses an **embedded Postgres** (pglite) in `.pgdata/` — real Postgres semantics, nothing to install. To develop against your actual Neon DB locally:
 
-### Seed accounts
+```bash
+DATABASE_URL="postgresql://...neon.../neondb?sslmode=require" npm start
+```
 
-| Role | Email | Password | Notes |
-|---|---|---|---|
-| Admin | admin@yogasamskruthi.org | admin123 | Full console |
-| Guruji (active) | ananda@yogasamskruthi.org | guruji123 | Has published content + one pending application |
-| Guruji (pending) | bhoomika@yogasamskruthi.org | guruji123 | Awaiting admin verification — approve from /admin/users |
-| Aspirant | ravi@example.com | aspirant123 | Has one pending application to Guruji Ananda |
+Reset local data: `npm run db:reset`.
 
-## Use-case coverage
-
-**Guruji**
-1. Register with document upload → account is `pending` until admin background verification (`/register/guruji`)
-2. Login and author images, calendar events, blogs, announcements with draft→publish→archive workflow (`/guruji`)
-3. Upload videos with a hard 10-minute cap — duration auto-detected in the browser and validated server-side
-4. Schedule audio/video calls with fellow Gurujis (`/calls`, Jitsi link auto-generated)
-5. Schedule calls with accepted aspirants (same page — the participant list is permission-filtered)
-6. View aspirant profile + intention on each application; accept/reject with or without a reason (`/guruji/applications`)
-7. See and answer aspirant queries (`/guruji/questions`)
-8. Published Guruji guidelines shown on the dashboard
-
-**Aspirant**
-1. Register with intention + target date (`/register/aspirant`)
-2. Browse verified Guruji profiles with expertise tags (`/gurujis`)
-3. Apply to the right Guruji with a per-application intention (from the profile page)
-4. Schedule calls with Gurujis who accepted them (`/calls`)
-5. Published Aspirant guidelines shown on the dashboard
-
-**Admin**
-1. View all Guruji/Aspirant profiles + verification documents; approve, reject, or disable with a note (`/admin/users`)
-2. Guidelines CMS: create/edit as draft, publish (auto version bump), unpublish (`/admin/guidelines`)
-3. Release management: stage a version with notes, deploy, roll back (`/admin/releases`) — wire the Deploy action to a CI/CD trigger (e.g. GitLab pipeline token) for real deployments
-4. Chat with any Guruji or Aspirant; members reach the admin team via the same Chat page
-5. Schedule audio/video calls with any active member (`/calls`)
+---
 
 ## Architecture
 
 ```
-server.js                 Express app, sessions, static + uploads
-src/db.js                 Schema + idempotent seed (node:sqlite)
-src/helpers.js            Auth middleware, multer upload configs, Jitsi link generator
-src/routes/public.js      Home, guruji directory/profiles, blog, published guidelines
-src/routes/auth.js        Login/logout, guruji + aspirant registration
-src/routes/guruji.js      Content authoring/publishing, applications, Q&A
-src/routes/aspirant.js    Apply, ask questions
-src/routes/admin.js       Member verification, guidelines CMS, releases
-src/routes/shared.js      Calls + chat (permission rules per role)
-views/                    EJS templates (partials/header|footer shared shell)
-public/css/style.css      Design system (leaf/haldi/indigo palette)
-uploads/                  images/ videos/ documents/
+api/index.js              Vercel serverless entry (exports the Express app)
+vercel.json               framework:null + rewrite all routes → the function
+server.js                 Express app: cookie sessions, media route, error handling
+src/db.js                 Async query layer — Neon in prod, pglite locally; schema + seed
+src/helpers.js            Role guards, in-memory uploads → Postgres bytea, Jitsi + embed URLs
+src/routes/
+  public.js               Home, guruji directory/profiles, blog, published guidelines
+  auth.js                 Login/logout, guruji + aspirant registration
+  guruji.js               Content authoring/publishing, applications, Q&A
+  aspirant.js             Apply, ask questions
+  admin.js                Member verification, guidelines CMS, releases
+  shared.js               Calls (permission-gated) + admin chat
+views/                    EJS templates
+public/css/style.css      Design system
 ```
 
-## Production hardening roadmap
+### Key serverless-aware decisions
+- **Everything lives in Neon.** Users, content, guidelines, applications, Q&A, calls, messages, releases — plus uploaded images and verification documents stored as `bytea` in the `media` table and served via `/media/:id`. No filesystem dependency (Vercel doesn't provide one).
+- **Cookie-based sessions** (`cookie-session`, signed with `SESSION_SECRET`) — nothing stored server-side, so they survive stateless function invocations.
+- **Videos are links, not uploads.** Vercel caps request bodies near 4.5 MB, so 5–10 minute videos can't upload through the function. Gurujis paste a YouTube/Vimeo URL that embeds on their profile — faster for viewers, within limits. Image/document uploads are capped at 4 MB for the same reason.
+- **Auto-migration + seed** run once on first DB access, idempotently.
 
-- **Database**: swap `src/db.js` for a `pg` pool against Neon Postgres — the schema is ANSI-compatible; move `datetime('now')` → `now()`
-- **Video duration**: the browser reports duration and the server enforces ≤ 600 s, but a hostile client can lie — verify with `ffprobe` after upload
-- **Media storage**: move `uploads/` to S3/R2 with signed URLs; add virus scanning on verification documents
-- **Calls**: Jitsi meet links work out of the box (audio + video, no account needed); for embedded calls use Jitsi iFrame API, Daily, or LiveKit
-- **Chat**: currently request/response; upgrade to WebSocket (socket.io) or SSE for live delivery
-- **Auth**: add CSRF tokens (csurf), rate limiting, email verification, password reset
-- **Deploy action**: POST to a GitLab pipeline trigger from `/admin/releases/:id/deploy` for true one-click upgrades
-- **Notifications**: email (Brevo) on application decisions, answers, and call invites
+---
+
+## Use-case coverage
+
+**Guruji:** register with verification document (→ pending until admin approves) · author images/calendar/blogs/announcements with draft→publish workflow · add videos by link (5–10 min) · schedule calls with fellow Gurujis and accepted aspirants · review aspirant profile + intention, accept/reject with or without reason · answer aspirant questions · read Guruji guidelines.
+
+**Aspirant:** register with intention + target date · browse verified Guruji profiles · apply to a Guruji · schedule calls with accepting Gurujis · read Aspirant guidelines.
+
+**Admin:** view all profiles + verification documents, approve/reject/disable · guidelines CMS (versioned draft→publish) · release management (stage/deploy/rollback) · chat with any member · schedule calls with any member.
+
+---
+
+## Hardening roadmap
+- **In-platform video / larger media:** add Vercel Blob or S3/R2 with client-side direct upload (bypasses the 4.5 MB function limit).
+- **Real-time chat:** current chat is request/response; move to WebSockets (a separate always-on service, since Vercel functions are short-lived) or a hosted realtime provider.
+- **Auth:** email verification, password reset, CSRF tokens, rate limiting.
+- **Embedded video calls:** Jitsi links work standalone; embed via the Jitsi iFrame API, Daily, or LiveKit for in-app calling.
+- **Notifications:** email members (e.g. Brevo) on application decisions, answered questions, call invites.
+- **Deploy action → CI/CD:** wire `/admin/releases/:id/deploy` to a real pipeline trigger.

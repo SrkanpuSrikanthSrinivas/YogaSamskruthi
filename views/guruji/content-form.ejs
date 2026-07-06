@@ -4,7 +4,7 @@
 <section class="panel">
   <h2>Blog / announcement / event / image</h2>
   <form method="post" action="/guruji/content/save" enctype="multipart/form-data" class="stack">
-    <% if (item) { %><input type="hidden" name="id" value="<%= item.id %>"><input type="hidden" name="existing_media" value="<%= item.media_path %>"><% } %>
+    <% if (item) { %><input type="hidden" name="id" value="<%= item.id %>"><input type="hidden" name="existing_image_id" value="<%= item.image_id || '' %>"><% } %>
     <label>Type
       <select name="type">
         <% ['blog','announcement','event','image'].forEach(t => { %>
@@ -15,32 +15,19 @@
     <label>Title<input name="title" required value="<%= item ? item.title : '' %>"></label>
     <label>Body<textarea name="body" rows="6"><%= item ? item.body : '' %></textarea></label>
     <label>Event date &amp; time (for calendar events)<input type="datetime-local" name="event_date" value="<%= item ? item.event_date : '' %>"></label>
-    <label>Image (for image posts, max 10&nbsp;MB)<input type="file" name="image" accept="image/*"></label>
+    <label>Image (for image posts &amp; blog covers, max 4&nbsp;MB)<input type="file" name="image" accept="image/*"></label>
     <button class="btn">Save draft</button>
   </form>
 </section>
 <section class="panel">
-  <h2>Video (5–10 min max)</h2>
-  <form method="post" action="/guruji/content/video" enctype="multipart/form-data" class="stack">
+  <h2>Video (5–10 min)</h2>
+  <p class="meta">Host the clip on YouTube or Vimeo and paste the link — it embeds on your profile. This keeps playback fast and within the 5–10 minute guideline.</p>
+  <form method="post" action="/guruji/content/video" class="stack">
     <label>Title<input name="title" required></label>
     <label>Description<textarea name="body" rows="3"></textarea></label>
-    <label>Video file (mp4/webm/mov, max 300&nbsp;MB)<input type="file" name="video" accept="video/*" required id="vfile"></label>
-    <input type="hidden" name="duration_seconds" id="vdur">
-    <p class="meta" id="vinfo">Duration is checked automatically — uploads over 10 minutes are rejected.</p>
-    <button class="btn">Upload video draft</button>
+    <label>YouTube / Vimeo link<input name="video_url" required placeholder="https://youtu.be/..."></label>
+    <button class="btn">Save video draft</button>
   </form>
-  <script>
-    document.getElementById('vfile').addEventListener('change', function() {
-      const f = this.files[0]; if (!f) return;
-      const v = document.createElement('video'); v.preload = 'metadata';
-      v.onloadedmetadata = () => {
-        URL.revokeObjectURL(v.src);
-        document.getElementById('vdur').value = Math.ceil(v.duration);
-        document.getElementById('vinfo').textContent = 'Detected duration: ' + Math.ceil(v.duration/60) + ' min' + (v.duration > 600 ? ' — too long, max 10 min.' : ' — OK.');
-      };
-      v.src = URL.createObjectURL(f);
-    });
-  </script>
 </section>
 </div>
 <%- include('../partials/footer') %>

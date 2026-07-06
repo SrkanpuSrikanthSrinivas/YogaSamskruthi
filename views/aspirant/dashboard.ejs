@@ -32,7 +32,7 @@
   <% if (!questions.length) { %><p class="meta">No questions yet.</p><% } %>
   <% questions.forEach(q => { %>
     <div class="panel">
-      <p class="meta">To <%= q.guruji %> &middot; <%= q.created_at.slice(0,10) %></p>
+      <p class="meta">To <%= q.guruji %> &middot; <%= fmt(q.created_at) %></p>
       <p><%= q.question %></p>
       <% if (q.answer) { %><p class="answer"><strong>Answer:</strong> <%= q.answer %></p><% } else { %><p class="meta">Awaiting answer.</p><% } %>
     </div>

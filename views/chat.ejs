@@ -16,7 +16,7 @@
       <% if (!msgs.length) { %><p class="meta">No messages yet — say namaste.</p><% } %>
       <% msgs.forEach(m => { %>
         <div class="msg <%= m.from_id===user.id ? 'mine' : '' %>">
-          <span class="meta"><%= m.from_name %> &middot; <%= m.created_at.slice(0,16) %></span>
+          <span class="meta"><%= m.from_name %> &middot; <%= fmt(m.created_at,'datetime') %></span>
           <p><%= m.body %></p>
         </div>
       <% }) %>

@@ -4,10 +4,10 @@
 <% users.forEach(u => { %>
   <section class="panel">
     <h3><%= u.name %> <span class="tag"><%= u.role %></span> <span class="tag st-<%= u.status==='active'?'published':(u.status==='pending'?'draft':'archived') %>"><%= u.status %></span></h3>
-    <p class="meta"><%= u.email %> &middot; joined <%= u.created_at.slice(0,10) %></p>
+    <p class="meta"><%= u.email %> &middot; joined <%= fmt(u.created_at) %></p>
     <% if (u.role==='guruji') { %>
       <p><strong>Expertise:</strong> <%= u.expertise %> &middot; <%= u.bio %></p>
-      <% if (u.document_path) { %><p><a href="<%= u.document_path %>" target="_blank">View verification document</a></p><% } else { %><p class="meta">No document submitted.</p><% } %>
+      <% if (u.document_id) { %><p><a href="/media/<%= u.document_id %>" target="_blank">View verification document</a></p><% } else { %><p class="meta">No document submitted.</p><% } %>
     <% } else { %>
       <p><strong>Intention:</strong> <%= u.intention %> <span class="meta">target: <%= u.target_date || '—' %></span></p>
     <% } %>

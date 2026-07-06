@@ -8,7 +8,7 @@
 </div>
 <section class="panel">
   <h2>Platform version</h2>
-  <p><strong><%= release ? 'v' + release.version : 'None deployed' %></strong> <span class="meta"><%= release ? 'deployed ' + (release.deployed_at||'').slice(0,16) : '' %></span></p>
+  <p><strong><%= release ? 'v' + release.version : 'None deployed' %></strong> <span class="meta"><%= release ? 'deployed ' + fmt(release.deployed_at,'datetime') : '' %></span></p>
   <a class="btn small" href="/admin/releases">Manage releases</a>
 </section>
 <section class="panel">

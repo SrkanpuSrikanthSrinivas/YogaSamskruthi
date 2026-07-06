@@ -14,7 +14,7 @@
     <td><span class="tag type"><%= c.type %></span></td>
     <td><%= c.title %></td>
     <td><span class="tag st-<%= c.status %>"><%= c.status %></span></td>
-    <td class="meta"><%= c.updated_at.slice(0,16) %></td>
+    <td class="meta"><%= fmt(c.updated_at,'datetime') %></td>
     <td class="actions">
       <a href="/guruji/content/<%= c.id %>/edit">Edit</a>
       <% if (c.status!=='published') { %><form method="post" action="/guruji/content/<%= c.id %>/publish" class="inline"><button class="link-btn">Publish</button></form><% } %>

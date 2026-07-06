@@ -5,7 +5,7 @@
 <% apps.forEach(a => { %>
   <section class="panel">
     <h3><%= a.name %> <span class="tag st-<%= a.status==='pending'?'draft':(a.status==='accepted'?'published':'archived') %>"><%= a.status %></span></h3>
-    <p class="meta"><%= a.email %> &middot; applied <%= a.created_at.slice(0,10) %> &middot; target: <%= a.target_date || '—' %></p>
+    <p class="meta"><%= a.email %> &middot; applied <%= fmt(a.created_at) %> &middot; target: <%= a.target_date || '—' %></p>
     <p><strong>Intention:</strong> <%= a.intention %></p>
     <% if (a.status==='pending') { %>
       <form method="post" action="/guruji/applications/<%= a.id %>/decide" class="stack">

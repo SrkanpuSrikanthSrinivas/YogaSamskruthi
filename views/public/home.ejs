@@ -12,6 +12,17 @@
   <%- include('../partials/mandala') %>
 </div>
 
+<div class="sec-h">Explore</div>
+<p class="intro">The knowledge we share — yoga, breath, meditation, ayurveda, trekking, and more.</p>
+<div class="grid">
+  <% (navPages||[]).forEach(p => { %>
+    <a class="card" href="/learn/<%= p.slug %>" style="text-decoration:none;color:inherit">
+      <h3><%= p.title %></h3>
+      <p class="muted">Explore →</p>
+    </a>
+  <% }) %>
+</div>
+
 <div class="sec-h">Gurujis</div>
 <p class="intro">Every Guruji here has passed background verification. Choose by the path you want to walk.</p>
 <div class="grid">

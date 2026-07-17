@@ -33,4 +33,13 @@ router.get('/guidelines', async (req, res, next) => {
   } catch (err) { next(err); }
 });
 
+// Informational content sections carried over from the old site.
+router.get('/learn/:slug', async (req, res, next) => {
+  try {
+    const page = (await db.query(`SELECT * FROM pages WHERE slug=$1 AND published=true`, [req.params.slug])).rows[0];
+    if (!page) return res.status(404).render('error', { code: 404, message: 'Page not found.' });
+    res.render('public/page', { page });
+  } catch (err) { next(err); }
+});
+
 module.exports = router;

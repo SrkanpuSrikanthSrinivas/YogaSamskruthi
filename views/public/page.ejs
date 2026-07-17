@@ -1,0 +1,16 @@
+<%- include('../partials/header') %>
+<div class="hero" style="padding:34px 0 12px">
+  <div>
+    <div class="eyebrow">Yoga — the refined way of life</div>
+    <h1><%= page.title %></h1>
+    <% if (page.intro) { %><p><%= page.intro %></p><% } %>
+  </div>
+  <%- include('../partials/mandala') %>
+</div>
+<div class="card" style="max-width:760px">
+  <div class="prose" style="line-height:1.7"><%= page.body %></div>
+</div>
+<div class="row" style="margin-top:18px">
+  <a class="btn ghost sm" href="/">← Home</a>
+</div>
+<%- include('../partials/footer') %>

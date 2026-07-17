@@ -1,6 +1,14 @@
-# Yogasamskruthi — Knowledge Exchange Platform
+# Yogasamskruthi — the new yogasamskruthi.org
 
-A place where **Gurujis** teach and **aspirants** learn, across yoga, natural farming, and entrepreneurship — with a real login system and everything saved to a database that the **admin** maintains.
+The replacement for the old Google Sites site, rebuilt as a real application: it keeps all the **informational content** (the About/Guru pages, Ayurveda, YogaAsana, Pranayama, Dhyanam, Trekking, Gallery, and the rest) **and** adds a platform where **Gurujis** teach and **aspirants** learn, with a real login system and everything saved to a database the **admin** maintains.
+
+## Content carried over from the old site
+- **The three teachers** are seeded as real profiles: Mani Narayan Guruji and Trek Leader Manjunath M as Gurujis, and a memorial blog post honouring **Yoga Guru Narasimhamurthy (1934–2016)**.
+- **All ten sections** from the old menu are live as editable pages under `/learn/...` — YogaAsana, Pranayama, Dhyanam, Mudra-Vignanam, Trekking, Ayurveda, Blogs, Pravachanas, Advisory Services, Gallery.
+- The **full Ayurveda page** (the detailed guidance shared by Yoga Vismaya Trust) is migrated verbatim in summary form.
+- Admin edits every page from the dashboard — text goes live immediately; pages can be published or hidden.
+
+**What you still need to add by hand:** the photographs. The old site's images are on Google's servers behind expiring links that can't be re-hosted automatically — re-upload them through the app (image uploads are supported) or paste stable links. The text of a few thinner sub-pages (e.g. Pranayama, Mudra-Vignanam) came through as short stubs; paste the original wording into the admin page editor to complete them.
 
 **Stack:** Node.js + Express + EJS · **Neon Postgres** (all data) · runs on Vercel or any Node host.
 
@@ -18,10 +26,9 @@ With no database configured, it uses a built-in embedded Postgres (stored in `.p
 ### Demo accounts
 | Role | Email | Password |
 |---|---|---|
-| Admin | admin@yoga.org | admin123 |
-| Guruji | ananda@yoga.org | guruji123 |
-| Aspirant | ravi@yoga.org | aspirant123 |
-| Guruji (pending — approve in admin) | chetan@yoga.org | guruji123 |
+| Admin | yoga.samskruthi@gmail.com | admin123 |
+| Guruji | mani@yogasamskruthi.org | guruji123 |
+| Aspirant | ravi@yogasamskruthi.org | aspirant123 |
 
 **Change these before real use.**
 

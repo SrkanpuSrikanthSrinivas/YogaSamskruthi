@@ -135,6 +135,19 @@ CREATE TABLE IF NOT EXISTS releases (
   status TEXT NOT NULL DEFAULT 'staged' CHECK (status IN ('staged','deployed')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Informational content sections carried over from the old site
+-- (YogaAsana, Pranayama, Ayurveda, Trekking, etc). Admin-editable.
+CREATE TABLE IF NOT EXISTS pages (
+  id SERIAL PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL,
+  intro TEXT DEFAULT '',
+  body TEXT DEFAULT '',
+  sort INTEGER NOT NULL DEFAULT 0,
+  published BOOLEAN NOT NULL DEFAULT true,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 `;
 
 async function seed(q) {
@@ -147,34 +160,82 @@ async function seed(q) {
     [m.role, m.name, m.email, h(m.pw), m.status, m.expertise || '', m.bio || '', m.intention || '', m.target || '']
   )).rows[0].id;
 
-  await add({ role: 'admin', name: 'Platform Admin', email: 'admin@yoga.org', pw: 'admin123', status: 'active' });
-  const ananda = await add({ role: 'guruji', name: 'Guruji Ananda', email: 'ananda@yoga.org', pw: 'guruji123', status: 'active', expertise: 'yoga', bio: 'Three decades of Hatha and Ashtanga. Teaches yoga as complete involvement in what we do.' });
-  const bhoomika = await add({ role: 'guruji', name: 'Guruji Bhoomika', email: 'bhoomika@yoga.org', pw: 'guruji123', status: 'active', expertise: 'farming', bio: 'Natural, zero-budget farming — soil health, seed saving, water wisdom.' });
-  await add({ role: 'guruji', name: 'Guruji Chetan', email: 'chetan@yoga.org', pw: 'guruji123', status: 'pending', expertise: 'entrepreneurship', bio: 'Bootstrapped three village enterprises. Mentors first-time founders.' });
-  const ravi = await add({ role: 'aspirant', name: 'Ravi Kumar', email: 'ravi@yoga.org', pw: 'aspirant123', status: 'active', intention: 'Build a steady daily pranayama practice and understand the breath.', target: '2026-12-31' });
-  const meera = await add({ role: 'aspirant', name: 'Meera S', email: 'meera@yoga.org', pw: 'aspirant123', status: 'active', intention: 'Start a small terrace kitchen-garden using natural methods.', target: '2026-09-30' });
+  // ----- Real people from yogasamskruthi.org -----
+  await add({ role: 'admin', name: 'Yogasamskruthi Admin', email: 'yoga.samskruthi@gmail.com', pw: 'admin123', status: 'active' });
+  const mani = await add({ role: 'guruji', name: 'Mani Narayan Guruji', email: 'mani@yogasamskruthi.org', pw: 'guruji123', status: 'active', expertise: 'yoga',
+    bio: 'Practicing yoga since 1988 (36+ years) and teaching since 1998 (26+ years). Never sold yoga — considers teaching it a service to the Almighty. Specialised in Yoga Asanas, Pranayama, and Meditation techniques derived from Himalayan traditions, guiding aspirants toward their spiritual goals.' });
+  const manjunath = await add({ role: 'guruji', name: 'Manjunath M (Trek Leader)', email: 'manjunath@yogasamskruthi.org', pw: 'guruji123', status: 'active', expertise: 'yoga',
+    bio: 'Has planned and led treks since childhood across much of India, especially the Himalayan regions. Very active in social work, an inspiration to the community, and does 108 Surya Namaskar every weekend. An advocate by profession.' });
+  const ravi = await add({ role: 'aspirant', name: 'Ravi Kumar', email: 'ravi@yogasamskruthi.org', pw: 'aspirant123', status: 'active', intention: 'Build a steady daily pranayama practice and understand the breath.', target: '2026-12-31' });
 
+  // Guru Narasimhamurthy — honoured as an inactive memorial profile (1934–2016)
   const post = (a, p) => q(`INSERT INTO posts (author_id,type,title,body,event_at,video_minutes) VALUES ($1,$2,$3,$4,$5,$6)`,
     [a, p.type, p.title, p.body, p.event_at || '', p.minutes || 0]);
-  await post(ananda, { type: 'announcement', title: 'Welcome to Yogasamskruthi', body: 'Yoga means complete involvement in what we do — gaining knowledge and applying it. This is a place to exchange that.' });
-  await post(ananda, { type: 'blog', title: 'Why breath comes before posture', body: 'Most beginners chase postures. The breath is the real teacher. Three observations to make before any asana.' });
-  await post(ananda, { type: 'event', title: 'Morning Sadhana — online circle', body: 'Open practice circle for accepted aspirants.', event_at: '2026-07-20 06:00' });
-  await post(ananda, { type: 'video', title: 'Three-part breath, explained', body: 'A short walkthrough of dirga pranayama.', minutes: 7 });
-  await post(bhoomika, { type: 'blog', title: 'Reading your soil by hand', body: 'Before any seed, learn what your soil is telling you through texture, smell, and colour.' });
+  await post(mani, { type: 'announcement', title: 'Welcome to Yogasamskruthi',
+    body: 'Yoga has become an indivisible part of our life with the grace of Guru. This platform is dedicated to our Guru with all respect and devotion. We share the knowledge of Yoga and Trekking activities — may it serve interested friends. Celebrate the practice and experience the bliss in every moment.' });
+  await post(mani, { type: 'blog', title: 'Yoga Guru Narasimhamurthy (1934–2016)',
+    body: 'Sri A. S. Narasimha Murthy Guruji was a realised yogi. Though he lived a family life, through his penance he attained a very high position in Astanga yoga. He had the blessings of Lord Shiva and was trained by veteran Himalayan yogis. He lived a high-order yogic life and gained many siddhis, but seldom exhibited them, living a simple and innocent life. He never "sold" yoga, considering yoga teaching a service to the Almighty, and taught over 25,000 students across India under the banner of Acharya Sri Adi Shankara Yoga Kendra — helping them with their physical, mental, and spiritual well-being. We are blessed to have been guided by such a great master, and it is our earnest endeavour to preserve his teachings and walk the path he directed.' });
 
   const guide = (audience, title, body) => q(`INSERT INTO guidelines (audience,title,body) VALUES ($1,$2,$3)`, [audience, title, body]);
-  await guide('guruji', 'Guruji conduct guidelines', "1. Verify your knowledge before teaching it.\n2. Respect the aspirant's pace and intention.\n3. Keep sessions within scheduled time.\n4. Never request payment outside the platform.\n5. Report concerns to the admin team.");
+  await guide('guruji', 'Guruji conduct guidelines', "1. Verify your knowledge before teaching it.\n2. Respect the aspirant's pace and intention.\n3. Keep sessions within scheduled time.\n4. Never sell yoga — teach it as a service.\n5. Report concerns to the admin team.");
   await guide('aspirant', 'Aspirant guidelines', "1. State your intention honestly.\n2. Attend scheduled sessions on time.\n3. Apply what you learn — knowledge grows by practice.\n4. Treat Gurujis and fellow aspirants with respect.");
 
   await q(`INSERT INTO applications (aspirant_id,guruji_id,intention,target_date) VALUES ($1,$2,$3,$4)`,
-    [ravi, ananda, 'Build a steady daily pranayama practice and understand the breath.', '2026-12-31']);
-  await q(`INSERT INTO applications (aspirant_id,guruji_id,intention,target_date,status,reason,decided_at) VALUES ($1,$2,$3,$4,'accepted',$5,now())`,
-    [meera, bhoomika, 'Start a small terrace kitchen-garden using natural methods.', '2026-09-30', 'Glad to guide you — start this season.']);
-  await q(`INSERT INTO questions (aspirant_id,guruji_id,question) VALUES ($1,$2,$3)`,
-    [meera, bhoomika, 'How often should I water raised beds in summer?']);
-  await q(`INSERT INTO messages (from_id,to_id,body) VALUES ($1,$2,$3)`, [ravi, 1, 'Namaste — how do I change my target date?']);
-  await q(`INSERT INTO messages (from_id,to_id,body) VALUES ($1,$2,$3)`, [1, ravi, 'Welcome Ravi! You can update it any time from your dashboard.']);
-  await q(`INSERT INTO releases (version,notes,status) VALUES ('1.0.0','Initial platform release','deployed')`);
+    [ravi, mani, 'Build a steady daily pranayama practice and understand the breath.', '2026-12-31']);
+  await q(`INSERT INTO releases (version,notes,status) VALUES ('1.0.0','Migrated from the Google Sites yogasamskruthi.org','deployed')`);
+
+  // ----- Informational pages carried over from the old site -----
+  const page = (slug, title, intro, body, sort, published = true) =>
+    q(`INSERT INTO pages (slug,title,intro,body,sort,published) VALUES ($1,$2,$3,$4,$5,$6)`, [slug, title, intro, body, sort, published]);
+
+  await page('yogaasana', 'YogaAsana', 'Physical postures — the third limb of Ashtanga Yoga.',
+    'Asana practice brings steadiness, reduced illness, and lightness of limb. When the posture becomes steady and comfortable, the practitioner is prepared for pranayama and the deeper limbs of yoga.\n\n(Content to be added — the original page material can be pasted here from the admin panel.)', 1);
+  await page('pranayama', 'Pranayama', 'Expansion and control of the life force (prana) through the breath.',
+    'Pranayama is the practice of working with the breath to expand and steady the life force. Practised purposefully, it prepares the mind and body for meditation.\n\n(Content to be added from the admin panel.)', 2);
+  await page('dhyanam', 'Dhyanam', 'Meditation — the seventh limb of Ashtanga Yoga.',
+    'Dhyana is a refined, deeper concentration of the mind, taken up after mastering asana, pranayama, pratyahara, and dharana. It leads the practitioner toward stillness and clarity.\n\n(Content to be added from the admin panel.)', 3);
+  await page('mudra-vignanam', 'Mudra-Vignanam', 'The science of mudras — gestures that direct energy in practice.',
+    'Mudras are subtle gestures and locks used alongside asana and pranayama to direct the flow of energy within the body.\n\n(Content to be added from the admin panel.)', 4);
+  await page('trekking', 'Trekking', 'Prakruthi pravaasa — journeying through nature as practice.',
+    'Trekking and hiking (Prakruthi pravaasa) keep the body fit and the mind calm, and have long been part of this community — with treks across much of India, especially the Himalayan regions, led by Manjunath M.\n\n(Trek details and photos to be added from the admin panel.)', 5);
+  await page('ayurveda', 'Ayurveda',
+    'Shared by Yoga Vismaya Trust (Anantji), yogavismaya.org. Disclaimer: please follow the below at your own risk — we are not responsible for any side effects or for not following the process correctly.',
+    [
+      'Dosha by age:',
+      '• Childhood (up to 14 years): most health problems are due to Kapha.',
+      '• Adult (14–60 years): most health problems are due to Pitta.',
+      '• Senior citizens (above 60 years): most health problems are due to Vata.',
+      '',
+      'To reduce tension at home:',
+      '1. Go for a morning or evening walk together.',
+      '2. Eat food sitting on the ground (helps trigger the muladhara chakra).',
+      '3. Always speak with sweet words and love.',
+      '4. If a mistake has happened, take ownership without a second thought and resolve the issue.',
+      '5. Let the kitchen become the home of medicines.',
+      '',
+      'To avoid health issues:',
+      '1. Replace plastic utensils with mud-pot, iron, or good-quality steel.',
+      '2. Use steel or glass water bottles instead of plastic.',
+      '3. Replace non-stick tava with iron tava (helps reduce iron deficiency).',
+      '4. Use coconut oil or sesame oil (ellu-enne) instead of low-quality refined oils.',
+      '5. Use millets instead of polished rice or low-quality packaged wheat.',
+      '',
+      'Constipation: take 50 ml pure coconut oil with warm water at night before sleep.',
+      '',
+      'Acidity (caused by Pitta): avoid green chillies; avoid sleeping and waking late; drink water immediately on waking; avoid coffee, tea and sugar; avoid packaged foods and plastic; avoid excess worry, anger, jealousy and sadness; use warm (not hot) water for bathing.',
+      '',
+      'Asthma: take Tulsi–Pudina kashaya; or powder 2–3 doddapathre leaves + 2 spoons pure honey + 1/4 spoon cooking turmeric + 5 black pepper + 5 lavanga and take morning and evening.',
+      '',
+      'Note: this is a summary of guidance shared with the community. For the full detail and corrections, contact yoga.samskruthi@gmail.com.',
+    ].join('\n'), 6);
+  await page('blogs', 'Blogs', 'Writings and reflections from the community.',
+    'Blog posts shared by our Gurujis appear across the platform. More long-form writing will be collected here.\n\n(Content to be added from the admin panel.)', 7);
+  await page('pravachanas', 'Pravachanas', 'Discourses and talks.',
+    'Recorded discourses and spiritual talks.\n\n(Links and recordings to be added from the admin panel.)', 8);
+  await page('advisory-services', 'Advisory Services', 'Guidance and advisory offered by the community.',
+    'Advisory services offered to aspirants and the wider community.\n\n(Details to be added from the admin panel.)', 9);
+  await page('gallery', 'Gallery', 'Photos from practice, treks, and gatherings.',
+    'A gallery of images from our sessions, treks, and events.\n\n(Photos to be uploaded from the admin panel — image uploads are supported.)', 10);
 }
 
 function init() {

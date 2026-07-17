@@ -12,8 +12,9 @@ router.get('/', async (req, res, next) => {
        ORDER BY CASE status WHEN 'pending' THEN 0 ELSE 1 END, created_at DESC`)).rows;
     const guides = (await db.query(`SELECT * FROM guidelines ORDER BY audience, updated_at DESC`)).rows;
     const releases = (await db.query(`SELECT * FROM releases ORDER BY created_at DESC`)).rows;
+    const pages = (await db.query(`SELECT * FROM pages ORDER BY sort`)).rows;
     const pending = members.filter(m => m.status === 'pending').length;
-    res.render('admin/dashboard', { members, guides, releases, pending });
+    res.render('admin/dashboard', { members, guides, releases, pages, pending });
   } catch (err) { next(err); }
 });
 
@@ -40,6 +41,16 @@ router.post('/guidelines', async (req, res, next) => {
       [audience, title, body, res.locals.me.id]);
     flash(req, 'Guidelines saved.');
     res.redirect('/admin');
+  } catch (err) { next(err); }
+});
+
+// Informational pages (YogaAsana, Pranayama, Ayurveda, etc.)
+router.post('/pages/:id', async (req, res, next) => {
+  try {
+    await db.query(`UPDATE pages SET title=$1,intro=$2,body=$3,published=$4,updated_at=now() WHERE id=$5`,
+      [req.body.title, req.body.intro || '', req.body.body || '', req.body.published === 'on', req.params.id]);
+    flash(req, 'Page “' + req.body.title + '” updated.');
+    res.redirect('/admin#pages');
   } catch (err) { next(err); }
 });
 

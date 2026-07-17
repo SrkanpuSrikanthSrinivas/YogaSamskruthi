@@ -58,6 +58,24 @@
   </div>
 </div>
 
+<div class="sec-h" id="pages">Website pages</div>
+<p class="intro">The informational sections carried over from the old site. Edit the text here — changes go live immediately. Untick “Published” to hide a page from the menu.</p>
+<% pages.forEach(p => { %>
+  <div class="card" style="margin-bottom:12px">
+    <div class="row" style="justify-content:space-between">
+      <b><%= p.title %></b>
+      <a class="muted" href="/learn/<%= p.slug %>" target="_blank">/learn/<%= p.slug %> ↗</a>
+    </div>
+    <form method="post" action="/admin/pages/<%= p.id %>" style="margin-top:8px">
+      <label>Title</label><input name="title" value="<%= p.title %>" required>
+      <label>Intro (short line under the title)</label><input name="intro" value="<%= p.intro %>">
+      <label>Body</label><textarea name="body" rows="8"><%= p.body %></textarea>
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px"><input type="checkbox" name="published" <%= p.published ? 'checked' : '' %> style="width:auto"> Published</label>
+      <button class="btn sm" style="margin-top:10px">Save page</button>
+    </form>
+  </div>
+<% }) %>
+
 <div class="sec-h">Releases</div>
 <div class="two">
   <div class="card">

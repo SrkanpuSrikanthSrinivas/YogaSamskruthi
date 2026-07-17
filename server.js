@@ -35,6 +35,8 @@ app.use(async (req, res, next) => {
     if (req.session && req.session.flash) req.session.flash = null;
     res.locals.embedUrl = embedUrl;
     res.locals.fmt = (v, mode) => { if (!v) return ''; const s = v instanceof Date ? v.toISOString().replace('T', ' ') : String(v); return mode === 'datetime' ? s.slice(0, 16) : s.slice(0, 10); };
+    // Informational sections for the top navigation (carried over from the old site).
+    res.locals.navPages = (await db.query(`SELECT slug,title FROM pages WHERE published=true ORDER BY sort`)).rows;
     next();
   } catch (err) { next(err); }
 });

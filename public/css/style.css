@@ -90,3 +90,18 @@ details.box>summary::-webkit-details-marker{display:none}
 .dd:hover .dd-menu{display:block}
 .dd-menu a{display:block;color:var(--ink);padding:8px 12px;border-radius:7px;font-size:.9rem}
 .dd-menu a:hover{background:#f2ede0}
+
+/* Rich home sections */
+.band{background:#fffdf6;border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin:26px 0}
+.band.contact{background:var(--green-deep);border-color:var(--green-deep);color:#eee7d7;text-align:center}
+.band.contact .sec-h{color:#fff;justify-content:center}
+.band.contact .intro{color:#cfc9ba;margin-left:auto;margin-right:auto}
+.card.feature{border-left:4px solid var(--haldi)}
+.tiles .tile{display:flex;flex-direction:column;justify-content:space-between;gap:16px;background:var(--card);
+  border:1px solid var(--line);border-radius:14px;padding:18px;text-decoration:none;color:var(--ink);min-height:104px;transition:.15s}
+.tiles .tile:hover{border-color:var(--haldi);transform:translateY(-2px)}
+.tile-name{font-family:'Marcellus';font-size:1.2rem}
+.tile-go{color:var(--haldi);font-size:.85rem;font-weight:600}
+.card.step{position:relative;padding-top:22px}
+.card.step .num{position:absolute;top:-14px;left:18px;width:34px;height:34px;border-radius:50%;background:var(--haldi);
+  color:#231a08;display:grid;place-items:center;font-family:'Marcellus';font-size:1.1rem}

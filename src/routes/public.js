@@ -3,8 +3,9 @@ const db = require('../db');
 
 router.get('/', async (req, res, next) => {
   try {
-    const gurus = (await db.query(`SELECT id,name,expertise,bio FROM members WHERE role='guruji' AND status='active' ORDER BY name`)).rows;
-    const guides = (await db.query(`SELECT * FROM guidelines ORDER BY audience`)).rows;
+    let gurus = [], guides = [];
+    try { gurus = (await db.query(`SELECT id,name,expertise,bio FROM members WHERE role='guruji' AND status='active' ORDER BY name`)).rows; } catch (e) {}
+    try { guides = (await db.query(`SELECT * FROM guidelines ORDER BY audience`)).rows; } catch (e) {}
     res.render('public/home', { gurus, guides });
   } catch (err) { next(err); }
 });

@@ -1,84 +1,150 @@
 <%- include('../partials/header') %>
 
-<!-- Hero -->
-<div class="hero">
-  <div>
-    <div class="eyebrow">Yoga — the refined way of life</div>
-    <h1>Yoga has become an indivisible part of our life, by the grace of Guru.</h1>
-    <p>Yogasamskruthi is dedicated to our Guru with respect and devotion — a place to preserve his teachings and share the knowledge of yoga, meditation, ayurveda, and trekking with all who seek it.</p>
-    <div class="row" style="margin-top:18px">
-      <% if (!me) { %>
-        <a class="btn" href="/join">Join as an aspirant</a>
-        <a class="btn ghost" href="/teach">Teach as a Guruji</a>
-      <% } else { %>
-        <a class="btn" href="/<%= me.role %>">Go to my dashboard</a>
-      <% } %>
+<!-- ============ HERO ============ -->
+<section class="lp-hero">
+  <div class="inner">
+    <div>
+      <div class="eyebrow">Yoga — the refined way of life</div>
+      <h1>Learn yoga the way it was meant to be taught — from a Guru, never sold.</h1>
+      <p class="sub">Yogasamskruthi carries forward the teaching of Yoga Guru Narasimhamurthy: asana, pranayama, meditation, ayurveda and time in nature — shared as a service, one aspirant at a time.</p>
+      <div class="row">
+        <% if (!me) { %>
+          <a class="btn lp" href="/join">Begin your practice — free</a>
+          <a class="btn lp-ghost" href="/teach">Teach as a Guruji</a>
+        <% } else { %>
+          <a class="btn lp" href="/<%= me.role %>">Go to my dashboard</a>
+          <a class="btn lp-ghost" href="/learn/yogaasana">Explore the teachings</a>
+        <% } %>
+      </div>
+      <div class="hero-note">No fees. Register with your intention and a Guruji will guide you.</div>
     </div>
+    <%- include('../partials/mandala') %>
   </div>
-  <%- include('../partials/mandala') %>
+</section>
+
+<!-- ============ TRUST BAR ============ -->
+<div class="trustbar">
+  <div class="t"><b>25,000+</b><span>students taught in our lineage</span></div>
+  <div class="t"><b>1988</b><span>practising since</span></div>
+  <div class="t"><b><%= gurus.length %></b><span>verified Gurujis</span></div>
+  <div class="t"><b>Never sold</b><span>yoga taught as service</span></div>
 </div>
 
-<!-- About -->
-<div class="band">
-  <div class="sec-h">About Yogasamskruthi</div>
-  <p class="intro" style="max-width:80ch">We share the knowledge of Yoga and Trekking, hoping it serves interested friends. Yoga here is not exercise alone — it is a refined way of living: asana, breath, meditation, ayurveda, and time spent in nature, practised as a service rather than sold. Celebrate the practice and experience the bliss in every moment.</p>
+<!-- ============ WHAT WE TEACH ============ -->
+<div class="center">
+  <div class="sec-h">What we teach</div>
+  <p class="intro">The complete practice — not postures alone, but the whole refined way of living.</p>
 </div>
-
-<!-- Lineage / teachers -->
-<div class="sec-h">Our lineage &amp; teachers</div>
-<p class="intro">The masters whose path we walk, and the teachers who carry the tradition forward today.</p>
-<div class="grid">
-  <div class="card feature">
-    <span class="pill gold">In memory</span>
-    <h3 style="margin-top:8px">Yoga Guru Narasimhamurthy (1934–2016)</h3>
-    <p class="muted">A realised yogi who attained a high position in Astanga yoga through penance, blessed by Lord Shiva and trained by Himalayan yogis. He never sold yoga — he taught over 25,000 students across India as a service to the Almighty, under Acharya Sri Adi Shankara Yoga Kendra. This platform preserves his teachings.</p>
-  </div>
-  <% gurus.forEach(g => { %>
-    <div class="card">
-      <span class="pill <%= g.expertise %>"><%= g.expertise %></span>
-      <h3 style="margin-top:8px"><a href="/gurujis/<%= g.id %>"><%= g.name %></a></h3>
-      <p class="muted"><%= (g.bio||'').slice(0,220) %><%= (g.bio||'').length>220?'…':'' %></p>
-      <a class="btn ghost sm" href="/gurujis/<%= g.id %>" style="margin-top:10px">View profile &amp; posts</a>
-    </div>
-  <% }) %>
-</div>
-
-<!-- What we share -->
-<div class="sec-h">What we share</div>
-<p class="intro">Explore the knowledge, section by section — carried over and kept alive here.</p>
-<div class="grid tiles">
+<div class="offer">
+  <% const glyphs = {yogaasana:'आ', pranayama:'प्र', dhyanam:'ध्या', 'mudra-vignanam':'मु', trekking:'गि', ayurveda:'आयु', blogs:'ले', pravachanas:'प्र', 'advisory-services':'से', gallery:'चि'}; %>
+  <% const blurbs = {
+      yogaasana:'Postures that bring steadiness, health and lightness of limb.',
+      pranayama:'Working with the breath to expand and steady the life force.',
+      dhyanam:'Meditation — the deeper stillness the practice leads toward.',
+      'mudra-vignanam':'The science of gestures that direct energy within.',
+      trekking:'Prakruthi pravaasa — journeying through nature as practice.',
+      ayurveda:'Everyday guidance on food, habits and healing.',
+      blogs:'Writings and reflections from our teachers.',
+      pravachanas:'Discourses and spiritual talks.',
+      'advisory-services':'Guidance offered to aspirants and the community.',
+      gallery:'Moments from practice, treks and gatherings.'
+    }; %>
   <% (navPages||[]).forEach(p => { %>
-    <a class="tile" href="/learn/<%= p.slug %>">
-      <span class="tile-name"><%= p.title %></span>
-      <span class="tile-go">Explore →</span>
+    <a href="/learn/<%= p.slug %>">
+      <div class="glyph"><%= glyphs[p.slug] || 'ॐ' %></div>
+      <h3><%= p.title %></h3>
+      <p><%= blurbs[p.slug] || 'Explore this practice.' %></p>
     </a>
   <% }) %>
 </div>
 
-<!-- How it works -->
-<div class="sec-h">How it works</div>
-<div class="grid">
-  <div class="card step"><span class="num">1</span><h3>Register your intention</h3><p class="muted">Join as an aspirant and tell us what you wish to learn and by when. Signing up takes a minute.</p></div>
-  <div class="card step"><span class="num">2</span><h3>Choose your Guruji</h3><p class="muted">Read the teachers' profiles and posts, then apply to the one whose path matches your intention.</p></div>
-  <div class="card step"><span class="num">3</span><h3>Learn &amp; practise</h3><p class="muted">Once accepted, ask questions and meet your Guruji in scheduled audio or video sessions.</p></div>
-</div>
-<div class="row" style="margin-top:16px">
-  <% if (!me) { %><a class="btn" href="/join">Begin as an aspirant</a><a class="btn ghost" href="/teach">Offer to teach</a><% } %>
+<!-- ============ LINEAGE ============ -->
+<div class="center"><div class="sec-h">The Guru we follow</div></div>
+<div class="lineage">
+  <div class="portrait">
+    <div>
+      <div class="om">ॐ</div>
+      <b>Yoga Guru Narasimhamurthy</b>
+      <small>1934 – 2016</small>
+    </div>
+  </div>
+  <div>
+    <h3 style="margin-top:0">A realised yogi who gave yoga away</h3>
+    <p class="muted">Sri A. S. Narasimha Murthy Guruji lived a family life, yet through penance attained a very high position in Astanga yoga. He carried the blessings of Lord Shiva and was trained by veteran Himalayan yogis. He gained many siddhis but seldom exhibited them, living a simple and innocent life.</p>
+    <p class="muted">He never sold yoga — he considered teaching it a service to the Almighty, and guided more than 25,000 students across India under Acharya Sri Adi Shankara Yoga Kendra, helping them with their physical, mental and spiritual well-being.</p>
+    <p class="muted">This platform exists to preserve his teachings and walk the path he directed.</p>
+  </div>
 </div>
 
-<!-- Guidelines -->
-<div class="sec-h">Guidelines &amp; values</div>
-<div class="two">
-  <% guides.forEach(g => { %>
-    <div class="card"><span class="pill gold"><%= g.audience %></span><h3 style="margin-top:8px"><%= g.title %></h3><p class="muted prose"><%= g.body %></p></div>
+<!-- ============ TEACHERS ============ -->
+<div class="center">
+  <div class="sec-h">Our Gurujis</div>
+  <p class="intro">Every teacher here is verified before they can accept an aspirant. Choose the one whose path matches your intention.</p>
+</div>
+<div class="teachers">
+  <% gurus.forEach(g => { %>
+    <div class="tcard">
+      <div class="avatar"><%= g.name.replace(/^Guruji\s+/,'').split(' ').map(w=>w[0]).slice(0,2).join('') %></div>
+      <h3><%= g.name %></h3>
+      <span class="pill <%= g.expertise %>"><%= g.expertise %></span>
+      <p><%= (g.bio||'').slice(0,150) %><%= (g.bio||'').length>150?'…':'' %></p>
+      <a class="btn ghost sm" href="/gurujis/<%= g.id %>">View profile</a>
+    </div>
   <% }) %>
+  <% if(!gurus.length){ %><div class="empty">Gurujis will appear here once verified.</div><% } %>
 </div>
 
-<!-- Contact -->
-<div class="band contact">
-  <div class="sec-h">Get in touch</div>
-  <p class="intro">For any questions, corrections, or to offer your service to the community, write to us.</p>
-  <a class="btn" href="mailto:yoga.samskruthi@gmail.com">yoga.samskruthi@gmail.com</a>
+<!-- ============ HOW IT WORKS ============ -->
+<div class="center" style="margin-top:34px">
+  <div class="sec-h">How to begin</div>
+  <p class="intro">Three steps from curiosity to guided practice.</p>
+</div>
+<div class="steps">
+  <div class="st"><b>1</b><h3>Register your intention</h3><p>Create a free account and say what you wish to learn and by when. Your intention is what a Guruji reads first.</p></div>
+  <div class="st"><b>2</b><h3>Apply to a Guruji</h3><p>Read the teachers' profiles and writings, then apply to the one who fits your path. They accept or respond with guidance.</p></div>
+  <div class="st"><b>3</b><h3>Learn and practise</h3><p>Once accepted, ask questions any time and meet your Guruji in scheduled audio or video sessions.</p></div>
+</div>
+<div class="center" style="margin-top:20px">
+  <% if(!me){ %><a class="btn lp" href="/join" style="background:var(--green);color:#fff">Create your free account</a><% } %>
+</div>
+
+<!-- ============ WHY ============ -->
+<div class="center" style="margin-top:36px">
+  <div class="sec-h">Why Yogasamskruthi</div>
+  <p class="intro">We are a community carrying a tradition, not a subscription service.</p>
+</div>
+<div class="why">
+  <div class="w"><b>Taught as a service</b><span>Following our Guru's example, yoga here is never sold. Teachers give their time to the community.</span></div>
+  <div class="w"><b>A real Guru, not a video</b><span>You apply to a specific teacher who reads your intention and guides you personally over live sessions.</span></div>
+  <div class="w"><b>Every teacher verified</b><span>Gurujis submit their background for verification and are approved by the admin before teaching.</span></div>
+  <div class="w"><b>The whole tradition</b><span>Asana, pranayama, dhyana, mudra, ayurveda and trekking — the complete way of life, not fitness alone.</span></div>
+</div>
+
+<!-- ============ FAQ ============ -->
+<div class="center" style="margin-top:36px">
+  <div class="sec-h">Common questions</div>
+</div>
+<div class="faq">
+  <details><summary>Is there any fee to learn here?</summary><p>No. Following our Guru's example, yoga is taught here as a service rather than sold. You register, state your intention, and a Guruji guides you.</p></details>
+  <details><summary>I am a complete beginner. Can I still join?</summary><p>Yes. Say so honestly in your intention when you register — your Guruji will start you where you are, with the breath and the basics before anything demanding.</p></details>
+  <details><summary>How do the sessions actually happen?</summary><p>Once a Guruji accepts your application, either of you can schedule a session. A private audio/video meeting link is generated automatically for the time you agree on.</p></details>
+  <details><summary>How do I become a Guruji here?</summary><p>Register through “Teach as a Guruji” and submit any relevant document. Background verification is done by the admin team before your account is enabled — you can sign in once approved.</p></details>
+  <details><summary>Can I ask questions between sessions?</summary><p>Yes. Once you are accepted by a Guruji, you can send questions any time from your dashboard, and their answers appear there.</p></details>
+  <details><summary>Is the Ayurveda guidance medical advice?</summary><p>No. It is traditional guidance shared with our community by Yoga Vismaya Trust. Please follow it at your own discretion and consult a qualified practitioner for medical concerns.</p></details>
+</div>
+
+<!-- ============ CLOSING CTA ============ -->
+<div class="closing">
+  <h2>Begin where you are</h2>
+  <p>Celebrate the practice and experience the bliss in every moment. Register your intention and let a Guruji guide the rest.</p>
+  <div class="row" style="justify-content:center">
+    <% if(!me){ %>
+      <a class="btn lp" href="/join">Join as an aspirant</a>
+      <a class="btn lp-ghost" href="/login">Sign in</a>
+    <% } else { %>
+      <a class="btn lp" href="/<%= me.role %>">Go to my dashboard</a>
+    <% } %>
+  </div>
 </div>
 
 <%- include('../partials/footer') %>

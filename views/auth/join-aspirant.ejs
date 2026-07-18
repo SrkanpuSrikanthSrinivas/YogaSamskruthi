@@ -1,15 +1,27 @@
 <%- include('../partials/header') %>
-<div class="card narrow">
-  <h1>Join as an aspirant</h1>
-  <p class="muted">Tell us your intention and target date. You can sign in right away.</p>
-  <form method="post" action="/join">
-    <label>Full name</label><input name="name" required>
-    <label>Email</label><input type="email" name="email" required>
-    <label>Password</label><input type="password" name="password" required minlength="6">
-    <label>Your intention</label><textarea name="intention" rows="3" required placeholder="What knowledge do you seek, and why?"></textarea>
-    <label>Target date</label><input type="date" name="target_date">
-    <button class="btn" style="margin-top:16px;width:100%">Create my account</button>
-  </form>
-  <p class="muted" style="margin-top:14px">Want to teach instead? <a href="/teach">Register as a Guruji</a>.</p>
+<div class="auth-wrap">
+  <div class="auth-side">
+    <div class="eyebrow">Begin your practice</div>
+    <h2>Tell us your intention</h2>
+    <p>Your intention is the first thing a Guruji reads. Say honestly what you wish to learn and by when — that is how the right teacher finds you.</p>
+    <div class="ticks">
+      <div><i>✓</i><span>Free — yoga here is taught as a service</span></div>
+      <div><i>✓</i><span>Apply to the Guruji whose path fits yours</span></div>
+      <div><i>✓</i><span>Ask questions and meet in live sessions</span></div>
+    </div>
+  </div>
+  <div class="auth-form">
+    <h1>Join as an aspirant</h1>
+    <p class="lead">You can sign in immediately after registering.</p>
+    <div class="auth-tabs"><a href="/login">Sign in</a><a class="on" href="/join">Join as aspirant</a><a href="/teach">Teach</a></div>
+    <form method="post" action="/join">
+      <label>Full name</label><input name="name" required>
+      <label>Email</label><input type="email" name="email" required>
+      <label>Password</label><input type="password" name="password" required minlength="6">
+      <label>Your intention</label><textarea name="intention" rows="3" required placeholder="What do you wish to learn, and why?"></textarea>
+      <label>Target date</label><input type="date" name="target_date">
+      <button class="btn" style="margin-top:18px;width:100%">Create my account</button>
+    </form>
+  </div>
 </div>
 <%- include('../partials/footer') %>

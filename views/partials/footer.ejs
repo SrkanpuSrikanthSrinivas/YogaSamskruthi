@@ -1,3 +1,26 @@
 </div></main>
-<div class="foot"><div class="wrap">Yogasamskruthi — complete involvement in what we do. Yoga · Farming · Entrepreneurship.</div></div>
+<div class="foot-rich"><div class="wrap">
+  <div class="foot-cols">
+    <div>
+      <h4>Yogasamskruthi</h4>
+      <p style="font-size:.88rem;color:#b8b2a3;margin:0 0 10px">Yoga has become an indivisible part of our life, by the grace of Guru. Dedicated to our Guru with respect and devotion.</p>
+      <a href="mailto:yoga.samskruthi@gmail.com">yoga.samskruthi@gmail.com</a>
+    </div>
+    <div>
+      <h4>Teachings</h4>
+      <% (navPages||[]).slice(0,5).forEach(p => { %><a href="/learn/<%= p.slug %>"><%= p.title %></a><% }) %>
+    </div>
+    <div>
+      <h4>More</h4>
+      <% (navPages||[]).slice(5).forEach(p => { %><a href="/learn/<%= p.slug %>"><%= p.title %></a><% }) %>
+    </div>
+    <div>
+      <h4>Community</h4>
+      <a href="/guidelines">Guidelines</a>
+      <% if (me) { %><a href="/<%= me.role %>">My dashboard</a><a href="/calls">Sessions</a><a href="/chat">Chat</a>
+      <% } else { %><a href="/join">Join as aspirant</a><a href="/teach">Teach as Guruji</a><a href="/login">Sign in</a><% } %>
+    </div>
+  </div>
+  <div class="foot-bottom">© <%= new Date().getFullYear() %> Yogasamskruthi · Yoga · Pranayama · Dhyana · Ayurveda · Trekking</div>
+</div></div>
 </body></html>

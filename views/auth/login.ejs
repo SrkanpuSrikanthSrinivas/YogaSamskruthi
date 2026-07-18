@@ -1,17 +1,31 @@
 <%- include('../partials/header') %>
-<div class="card narrow">
-  <h1>Sign in</h1>
-  <form method="post" action="/login">
-    <label>Email</label><input type="email" name="email" required>
-    <label>Password</label><input type="password" name="password" required>
-    <button class="btn" style="margin-top:16px;width:100%">Sign in</button>
-  </form>
-  <p class="muted" style="margin-top:16px">New here? <a href="/join">Join as an aspirant</a> or <a href="/teach">teach as a Guruji</a>.</p>
-  <div class="note" style="margin-top:14px">
-    <b>Try the demo accounts:</b><br>
-    Admin — admin@yoga.org / admin123<br>
-    Guruji — ananda@yoga.org / guruji123<br>
-    Aspirant — ravi@yoga.org / aspirant123
+<div class="auth-wrap">
+  <div class="auth-side">
+    <div class="eyebrow">Welcome back</div>
+    <h2>Continue your practice</h2>
+    <p>Sign in to reach your Guruji, ask your questions, and join your scheduled sessions.</p>
+    <div class="ticks">
+      <div><i>✓</i><span>Your applications and their answers</span></div>
+      <div><i>✓</i><span>Scheduled audio and video sessions</span></div>
+      <div><i>✓</i><span>Guidance and support from the admin team</span></div>
+    </div>
+  </div>
+  <div class="auth-form">
+    <h1>Sign in</h1>
+    <p class="lead">Use the email you registered with.</p>
+    <div class="auth-tabs"><a class="on" href="/login">Sign in</a><a href="/join">Join as aspirant</a><a href="/teach">Teach</a></div>
+    <form method="post" action="/login">
+      <label>Email</label><input type="email" name="email" required autofocus>
+      <label>Password</label><input type="password" name="password" required>
+      <button class="btn" style="margin-top:18px;width:100%">Sign in</button>
+    </form>
+    <p class="muted" style="margin-top:14px">New here? <a href="/join">Join as an aspirant</a> or <a href="/teach">register to teach</a>.</p>
+    <div class="demo-box">
+      <b>Demo accounts</b><br>
+      Admin <code>yoga.samskruthi@gmail.com</code> / <code>admin123</code><br>
+      Guruji <code>mani@yogasamskruthi.org</code> / <code>guruji123</code><br>
+      Aspirant <code>ravi@yogasamskruthi.org</code> / <code>aspirant123</code>
+    </div>
   </div>
 </div>
 <%- include('../partials/footer') %>
